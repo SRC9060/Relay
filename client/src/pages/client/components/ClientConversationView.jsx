@@ -310,25 +310,35 @@ export default function ClientConversationView({
                 borderTop: '1px solid rgba(41, 43, 41, 0.06)'
               }}
             >
-              {identifiedDates.map((d, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '11px',
-                    padding: '3px 8px',
-                    backgroundColor: 'var(--color-surface)',
-                    border: 'var(--border-subtle)',
-                    borderRadius: 'var(--radius-xs)',
-                    color: 'var(--color-charcoal)'
-                  }}
-                >
-                  <Calendar size={11} color="var(--color-charcoal-muted)" />
-                  <span>{d}</span>
-                </div>
-              ))}
+              {identifiedDates.map((item, idx) => {
+                // Atlas stores extracted dates as objects; older demo data may use strings.
+                // Convert both shapes to display text before rendering to avoid React object-child errors.
+                const dateLabel = typeof item === 'string'
+                  ? item
+                  : [item?.date, item?.description].filter(Boolean).join(' — ');
+
+                if (!dateLabel) return null;
+
+                return (
+                  <div
+                    key={item?.date || idx}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontSize: '11px',
+                      padding: '3px 8px',
+                      backgroundColor: 'var(--color-surface)',
+                      border: 'var(--border-subtle)',
+                      borderRadius: 'var(--radius-xs)',
+                      color: 'var(--color-charcoal)'
+                    }}
+                  >
+                    <Calendar size={11} color="var(--color-charcoal-muted)" />
+                    <span>{dateLabel}</span>
+                  </div>
+                );
+              })}
               {importantInformation.map((info, idx) => (
                 <div
                   key={idx}
