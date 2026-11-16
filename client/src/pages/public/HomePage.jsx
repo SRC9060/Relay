@@ -887,7 +887,7 @@ export default function HomePage() {
                       transition: 'transform 0.22s ease'
                     }}
                   >
-                    Gemini evaluates the entire thread context, determining whether an email requires client authority, assistant execution, or no response.
+                    Relay evaluates the entire thread context to determine whether an email requires client authority, assistant action, or no response.
                   </p>
                 </>
               )}
@@ -1321,7 +1321,7 @@ export default function HomePage() {
                   transition: 'transform 0.22s ease'
                 }}
               >
-                Experience Relay's dual-workspace architecture with realistic executive data, server-side Gemini intelligence, and deterministic fallback reliability.
+                Experience Relay's dual-workspace architecture with realistic executive data and contextual email intelligence.
               </p>
 
               <div
