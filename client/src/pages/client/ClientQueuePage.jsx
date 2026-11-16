@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   CheckCircle2,
   Clock,
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useConversations } from '../../context/ConversationContext';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
 import { useAccounts } from '../../context/AccountContext';
 import ClientTopBar from './components/ClientTopBar';
 import ClientAttentionCard from './components/ClientAttentionCard';
@@ -19,10 +20,7 @@ import ClientDelegateModal from './components/ClientDelegateModal';
 export default function ClientQueuePage() {
   const { user } = useAuth();
   const {
-    conversations,
     counts,
-    loading,
-    setActiveSegment,
     markHandled,
     delegateToAssistant,
     toastMessage
@@ -34,16 +32,38 @@ export default function ClientQueuePage() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [delegateTarget, setDelegateTarget] = useState(null);
   const [showMobileDetail, setShowMobileDetail] = useState(false);
+  const [clientConversations, setClientConversations] = useState([]);
+  const [queueLoading, setQueueLoading] = useState(true);
 
-  // The client decision desk must always use the complete, unarchived inbox.
-  // Do not inherit the assistant's last selected segment (for example, assistant_reply).
+  // Load the Client Decision Desk from its own unfiltered inbox request.
+  // This deliberately avoids inheriting the Assistant workspace's current segment.
+  const loadClientConversations = useCallback(async () => {
+    setQueueLoading(true);
+    try {
+      const response = await api.getConversations({
+        segment: 'all',
+        accountId: selectedAccountId
+      });
+      if (response && Array.isArray(response.data)) {
+        setClientConversations(response.data);
+      } else {
+        setClientConversations([]);
+      }
+    } catch (error) {
+      console.error('[Relay Client] Failed to load decision queue:', error);
+      setClientConversations([]);
+    } finally {
+      setQueueLoading(false);
+    }
+  }, [selectedAccountId]);
+
   useEffect(() => {
-    setActiveSegment('all');
-  }, [setActiveSegment]);
+    loadClientConversations();
+  }, [loadClientConversations]);
 
   // All outstanding client conversations before category filtering
   const totalClientQueue = useMemo(() => {
-    let list = conversations.filter(
+    let list = clientConversations.filter(
       (c) =>
         c.responsibility === 'client' &&
         c.actionStatus !== 'completed' &&
@@ -56,7 +76,7 @@ export default function ClientQueuePage() {
       list = list.filter((c) => c.accountId === selectedAccountId);
     }
     return list;
-  }, [conversations, selectedAccountId]);
+  }, [clientConversations, selectedAccountId]);
 
   // Client Attention Queue: filtered by category and search
   const clientQueue = useMemo(() => {
@@ -115,6 +135,7 @@ export default function ClientQueuePage() {
   const handleMarkHandled = async (id) => {
     const currentIndex = clientQueue.findIndex((c) => c.id === id);
     await markHandled(id);
+    await loadClientConversations();
 
     // Pick next item in queue if available
     const remaining = clientQueue.filter((c) => c.id !== id);
@@ -130,6 +151,7 @@ export default function ClientQueuePage() {
   const handleConfirmDelegate = async (id, notes) => {
     const currentIndex = clientQueue.findIndex((c) => c.id === id);
     await delegateToAssistant(id, notes);
+    await loadClientConversations();
 
     // Pick next item in queue if available
     const remaining = clientQueue.filter((c) => c.id !== id);
@@ -323,7 +345,7 @@ export default function ClientQueuePage() {
               gap: '10px'
             }}
           >
-            {loading ? (
+            {queueLoading ? (
               <div
                 style={{
                   padding: '40px 20px',
