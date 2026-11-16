@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Sparkles,
   Send,
-  Cpu,
   Mail,
   UserCheck,
   UserRound,
@@ -136,23 +135,6 @@ export default function AIAssistantPage() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span
-            style={{
-              fontSize: '11px',
-              padding: '3px 10px',
-              borderRadius: 'var(--radius-full)',
-              backgroundColor: 'var(--color-surface-subtle)',
-              border: 'var(--border-subtle)',
-              color: 'var(--color-charcoal-muted)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
-            <Cpu size={12} />
-            {aiStatus?.isConfigured ? 'Gemini 1.5 Flash (Live API)' : 'Deterministic Fallback Engine'}
-          </span>
-
           <Button
             variant="ghost"
             size="sm"
@@ -325,8 +307,8 @@ export default function AIAssistantPage() {
             <Sparkles size={14} className="animate-spin" color="var(--color-forest-green)" />
             <span>
               {aiStatus?.isConfigured
-                ? 'Analyzing mailbox state with Gemini AI...'
-                : 'Analyzing mailbox state with Copilot engine...'}
+                ? 'Reviewing mailbox context...'
+                : 'Reviewing mailbox context...'}
             </span>
           </div>
         )}
