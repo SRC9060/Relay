@@ -234,6 +234,7 @@ export const getAiStatus = async (req, res) => {
     success: true,
     data: {
       provider: 'Google Gemini REST API (v1beta)',
+      model: geminiService.getModel(),
       configuredModel: geminiService.getModel(),
       isConfigured,
       aiSource: isConfigured && liveVerification.success ? 'gemini' : 'deterministic-fallback',

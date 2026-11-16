@@ -247,10 +247,18 @@ test('POST /api/conversations/:id/classify classifies newsletter as none respons
 });
 
 test('POST /api/conversations/:id/classify flags low-confidence email as needsReview', async () => {
-  // conv_12 is an ambiguous allocation thread
+  geminiService.setMockResponse({
+    responsibility: 'client',
+    confidenceScore: 0.62,
+    needsReview: true,
+    explanation: 'Ambiguous email with mixed operational scheduling and statutory financial terms; confidence below threshold.',
+    requiresAction: true,
+    importantInformation: ['Ambiguous allocation']
+  });
   const res = await fetch(`${baseUrl}/api/conversations/conv_12/classify`, { method: 'POST' });
   assert.equal(res.status, 200);
   const json = await res.json();
+  geminiService.clearMockResponse();
   assert.equal(json.success, true);
   assert.ok(json.classification.confidenceScore < 0.75);
   assert.equal(json.classification.needsReview, true);
