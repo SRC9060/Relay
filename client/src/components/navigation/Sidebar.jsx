@@ -244,11 +244,10 @@ export default function Sidebar({ isOpen, onClose }) {
                           display: 'inline-flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          flexShrink: 0,
-                          color: isActive ? 'var(--color-primary)' : 'var(--color-charcoal-light)'
+                          flexShrink: 0
                         }}
                       >
-                        <Icon size={16} strokeWidth={isActive ? 2 : 1.75} />
+                        <Icon size={16} strokeWidth={1.75} />
                       </span>
                       <span>{item.label}</span>
                     </div>
