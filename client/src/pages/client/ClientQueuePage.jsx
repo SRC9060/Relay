@@ -59,6 +59,9 @@ export default function ClientQueuePage() {
 
   useEffect(() => {
     loadClientConversations();
+    const handleConversationChange = () => loadClientConversations();
+    window.addEventListener('relay:conversations-changed', handleConversationChange);
+    return () => window.removeEventListener('relay:conversations-changed', handleConversationChange);
   }, [loadClientConversations]);
 
   // All outstanding client conversations before category filtering
