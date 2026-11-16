@@ -32,6 +32,8 @@ export default function ConversationListHeader() {
     setActiveSegment,
     conversations,
     counts,
+    countsLoaded,
+    loading,
     searchQuery,
     setSearchQuery,
     subFilter,
@@ -42,11 +44,11 @@ export default function ConversationListHeader() {
   const title = SEGMENT_TITLES[activeSegment] || 'Inbox';
 
   const responsibilityTabs = [
-    { id: 'all', label: 'All', count: counts?.all ?? 17 },
-    { id: 'assistant_reply', label: 'Assistant to Reply', count: counts?.assistantReply ?? 7, color: 'var(--color-resp-assistant)' },
-    { id: 'client_reply', label: 'Client to Reply', count: counts?.clientReply ?? 5, color: 'var(--color-resp-client)' },
-    { id: 'no_reply', label: 'No Reply Needed', count: counts?.noReply ?? 4, color: 'var(--color-resp-none)' },
-    { id: 'needs_review', label: 'Needs Review', count: counts?.needsReview ?? 1, color: 'var(--color-resp-review)' }
+    { id: 'all', label: 'All', count: countsLoaded ? (counts?.all ?? 0) : '—' },
+    { id: 'assistant_reply', label: 'Assistant to Reply', count: countsLoaded ? (counts?.assistantReply ?? 0) : '—', color: 'var(--color-resp-assistant)' },
+    { id: 'client_reply', label: 'Client to Reply', count: countsLoaded ? (counts?.clientReply ?? 0) : '—', color: 'var(--color-resp-client)' },
+    { id: 'no_reply', label: 'No Reply Needed', count: countsLoaded ? (counts?.noReply ?? 0) : '—', color: 'var(--color-resp-none)' },
+    { id: 'needs_review', label: 'Needs Review', count: countsLoaded ? (counts?.needsReview ?? 0) : '—', color: 'var(--color-resp-review)' }
   ];
 
   const isRespTabActive = (tabId) => {
@@ -106,7 +108,7 @@ export default function ConversationListHeader() {
               color: 'var(--color-charcoal-muted)'
             }}
           >
-            {conversations.length} {conversations.length === 1 ? 'thread' : 'threads'}
+            {loading ? 'Loading threads…' : `${conversations.length} ${conversations.length === 1 ? 'thread' : 'threads'}`}
           </span>
         </div>
       </div>
