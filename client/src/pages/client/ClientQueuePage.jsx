@@ -22,6 +22,7 @@ export default function ClientQueuePage() {
     conversations,
     counts,
     loading,
+    setActiveSegment,
     markHandled,
     delegateToAssistant,
     toastMessage
@@ -33,6 +34,12 @@ export default function ClientQueuePage() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [delegateTarget, setDelegateTarget] = useState(null);
   const [showMobileDetail, setShowMobileDetail] = useState(false);
+
+  // The client decision desk must always use the complete, unarchived inbox.
+  // Do not inherit the assistant's last selected segment (for example, assistant_reply).
+  useEffect(() => {
+    setActiveSegment('all');
+  }, [setActiveSegment]);
 
   // All outstanding client conversations before category filtering
   const totalClientQueue = useMemo(() => {
@@ -316,7 +323,18 @@ export default function ClientQueuePage() {
               gap: '10px'
             }}
           >
-            {clientQueue.length === 0 ? (
+            {loading ? (
+              <div
+                style={{
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  color: 'var(--color-charcoal-muted)',
+                  fontSize: '12px'
+                }}
+              >
+                Loading client decisions…
+              </div>
+            ) : clientQueue.length === 0 ? (
               <div
                 style={{
                   padding: '40px 20px',
