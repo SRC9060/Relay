@@ -248,6 +248,7 @@ export default function HomePage() {
               icon={ArrowRight}
               iconPosition="right"
               onClick={() => navigate(user?.role === 'client' ? '/client' : '/app/overview')}
+              style={{ minHeight: '38px' }}
             >
               Enter Workspace
             </Button>
@@ -270,8 +271,11 @@ export default function HomePage() {
                 icon={Sparkles}
                 iconPosition="right"
                 onClick={() => setShowDemoModal(true)}
+                title="Explore demo"
+                aria-label="Explore demo"
+                style={{ minHeight: '38px', fontWeight: 600 }}
               >
-                Explore demo
+                Explore Live Demo
               </Button>
             </>
           )}
@@ -282,7 +286,7 @@ export default function HomePage() {
       <section
         id="product"
         style={{
-          padding: '72px 24px 48px',
+          padding: 'clamp(48px, 8vw, 76px) clamp(16px, 3vw, 24px) 44px',
           maxWidth: '1200px',
           margin: '0 auto',
           width: '100%',
@@ -297,33 +301,33 @@ export default function HomePage() {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '4px 12px',
+            gap: '7px',
+            padding: '5px 14px',
             borderRadius: 'var(--radius-full)',
             backgroundColor: 'var(--color-surface-subtle)',
             border: 'var(--border-subtle)',
-            fontSize: '11.5px',
+            fontSize: '12px',
             fontWeight: 600,
             color: 'var(--color-primary)',
             marginBottom: '20px',
-            letterSpacing: '0.02em'
+            letterSpacing: '0.01em'
           }}
         >
-          <ShieldCheck size={13} color="var(--color-primary)" />
-          AI-Powered Email Management for Assistants & Clients
+          <ShieldCheck size={14} color="var(--color-primary)" />
+          Assistant & Client Email Workflow • Elena (Assistant) & Marcus (Client)
         </div>
 
         {/* Main Headline */}
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(32px, 5.5vw, 54px)',
+            fontSize: 'clamp(30px, 5.2vw, 54px)',
             fontWeight: 700,
             color: 'var(--color-charcoal)',
             lineHeight: 1.15,
             letterSpacing: '-0.03em',
             maxWidth: '860px',
-            marginBottom: '18px'
+            marginBottom: '16px'
           }}
         >
           Every conversation. The right person to respond.
@@ -336,22 +340,24 @@ export default function HomePage() {
             color: 'var(--color-charcoal-muted)',
             lineHeight: 1.6,
             maxWidth: '680px',
-            marginBottom: '32px'
+            marginBottom: '28px'
           }}
         >
-          Relay helps personal assistants manage client communication by identifying who needs to respond,
-          organizing important conversations, and keeping everyone on the same page.
+          Relay connects Personal Assistants and Clients in a shared correspondence workflow.
+          AI classifies who needs to reply, protects human decisions, and routes executive approvals
+          so clients stay focused while assistants execute.
         </p>
 
         {/* Action CTAs */}
         <div
+          className="home-hero-cta-group"
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '12px',
             flexWrap: 'wrap',
-            marginBottom: '52px'
+            marginBottom: '18px'
           }}
         >
           <Button
@@ -360,18 +366,41 @@ export default function HomePage() {
             icon={ArrowRight}
             iconPosition="right"
             onClick={() => setShowDemoModal(true)}
-            style={{ padding: '12px 28px', fontSize: '14.5px', fontWeight: 600 }}
+            title="Explore demo"
+            aria-label="Explore demo"
+            style={{ minHeight: '44px', padding: '12px 28px', fontSize: '14.5px', fontWeight: 600 }}
           >
-            Explore demo
+            Explore Live Demo
           </Button>
           <Button
             variant="secondary"
             size="lg"
             onClick={scrollToHowItWorks}
-            style={{ padding: '12px 24px', fontSize: '14.5px' }}
+            style={{ minHeight: '44px', padding: '12px 24px', fontSize: '14.5px' }}
           >
-            See how it works
+            See How It Works
           </Button>
+        </div>
+
+        {/* Honest Simulated Prototype Disclosure */}
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '7px',
+            fontSize: '12px',
+            color: 'var(--color-charcoal-muted)',
+            maxWidth: '640px',
+            lineHeight: 1.45,
+            marginBottom: '44px',
+            padding: '4px 12px'
+          }}
+        >
+          <ShieldCheck size={13} color="var(--color-primary)" style={{ flexShrink: 0 }} />
+          <span>
+            <strong>Simulated Prototype Notice:</strong> Inboxes, threads, and AI actions in this demo environment are fully simulated. No real OAuth connections or actual email sending.
+          </span>
         </div>
 
         {/* 3. Hero Visual: Premium Interactive 3D Layered Product Stage */}
@@ -403,12 +432,12 @@ export default function HomePage() {
             {/* Top Floating AI Triage Intelligence Bridge */}
             <motion.div
               style={{
-                transform: 'translateZ(32px)',
+                transform: 'translateZ(20px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.96)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: 'var(--radius-lg)',
                 border: '1px solid var(--border-subtle)',
-                boxShadow: '0 12px 28px -6px rgba(41, 45, 41, 0.08), 0 2px 6px rgba(41, 45, 41, 0.04)',
+                boxShadow: '0 8px 24px -6px rgba(41, 45, 41, 0.06), 0 2px 6px rgba(41, 45, 41, 0.03)',
                 padding: '10px 18px',
                 display: 'flex',
                 alignItems: 'center',
@@ -431,7 +460,7 @@ export default function HomePage() {
                   Relay Autonomous Routing Engine
                 </span>
                 <span style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>
-                  • 98.4% Confidence Precision across 17 Active Threads
+                  • Client decides; Assistant executes
                 </span>
               </div>
 
@@ -446,7 +475,7 @@ export default function HomePage() {
                     color: 'var(--color-primary)'
                   }}
                 >
-                  3 Elena • 2 Marcus • 1 Archived
+                  Elena (Assistant) • Marcus (Client)
                 </span>
                 <span
                   style={{
@@ -458,7 +487,7 @@ export default function HomePage() {
                     color: 'var(--color-success)'
                   }}
                 >
-                  Live Simulated
+                  Simulated Inboxes
                 </span>
               </div>
             </motion.div>
@@ -467,7 +496,7 @@ export default function HomePage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
                 gap: '20px',
                 transformStyle: 'preserve-3d'
               }}
@@ -721,14 +750,14 @@ export default function HomePage() {
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          padding: '80px 24px',
+          padding: 'clamp(56px, 8vw, 84px) clamp(16px, 3vw, 24px)',
           backgroundColor: '#FFFFFF',
           borderTop: 'var(--border-subtle)',
           borderBottom: 'var(--border-subtle)'
         }}
       >
         <div style={{ maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
-          <div style={{ textAlign: 'center', marginBottom: '52px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <span
               style={{
                 fontSize: '11px',
@@ -743,7 +772,7 @@ export default function HomePage() {
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(26px, 3.5vw, 36px)',
+                fontSize: 'clamp(24px, 3.5vw, 36px)',
                 fontWeight: 700,
                 color: 'var(--color-charcoal)',
                 marginTop: '8px',
@@ -752,12 +781,23 @@ export default function HomePage() {
             >
               Three steps to seamless correspondence
             </h2>
+            <p
+              style={{
+                fontSize: '14px',
+                color: 'var(--color-charcoal-muted)',
+                maxWidth: '560px',
+                margin: '8px auto 0',
+                lineHeight: 1.5
+              }}
+            >
+              Operating principle: <strong>Client decides; Assistant executes.</strong>
+            </p>
           </div>
 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
               gap: '24px'
             }}
           >
@@ -767,7 +807,7 @@ export default function HomePage() {
               hoverBorderColor="rgba(53, 75, 63, 0.45)"
               hoverShadow="0 22px 44px -10px rgba(53, 75, 63, 0.15), 0 2px 8px rgba(41, 45, 41, 0.04)"
               style={{
-                padding: '30px 26px',
+                padding: 'clamp(22px, 3vw, 30px) clamp(18px, 2.5vw, 26px)',
                 backgroundColor: 'var(--color-surface)',
                 borderRadius: 'var(--radius-xl)',
                 border: '1px solid var(--border-subtle)',
@@ -810,7 +850,7 @@ export default function HomePage() {
                       transition: 'all 0.22s ease'
                     }}
                   >
-                    Connect email accounts
+                    Connect simulated inboxes
                   </h3>
                   <p
                     style={{
@@ -821,7 +861,7 @@ export default function HomePage() {
                       transition: 'transform 0.22s ease'
                     }}
                   >
-                    Integrate Google Workspace and Microsoft 365. Relay monitors incoming correspondence across personal and organizational inboxes simultaneously.
+                    Connect simulated Google Workspace or Microsoft 365 inboxes. Prototype correspondence across executive and assistant mailboxes without requiring real credentials.
                   </p>
                 </>
               )}
@@ -833,7 +873,7 @@ export default function HomePage() {
               hoverBorderColor="rgba(53, 75, 63, 0.45)"
               hoverShadow="0 22px 44px -10px rgba(53, 75, 63, 0.15), 0 2px 8px rgba(41, 45, 41, 0.04)"
               style={{
-                padding: '30px 26px',
+                padding: 'clamp(22px, 3vw, 30px) clamp(18px, 2.5vw, 26px)',
                 backgroundColor: 'var(--color-surface)',
                 borderRadius: 'var(--radius-xl)',
                 border: '1px solid var(--border-subtle)',
@@ -876,7 +916,7 @@ export default function HomePage() {
                       transition: 'all 0.22s ease'
                     }}
                   >
-                    Let AI classify responsibility
+                    AI classifies responsibility
                   </h3>
                   <p
                     style={{
@@ -887,7 +927,7 @@ export default function HomePage() {
                       transition: 'transform 0.22s ease'
                     }}
                   >
-                    Relay evaluates the entire thread context to determine whether an email requires client authority, assistant action, or no response.
+                    Relay evaluates complete thread context to categorize messages into Client to Reply, Assistant to Reply, or No Reply Needed. Assistants can override any tag instantly.
                   </p>
                 </>
               )}
@@ -899,7 +939,7 @@ export default function HomePage() {
               hoverBorderColor="rgba(53, 75, 63, 0.45)"
               hoverShadow="0 22px 44px -10px rgba(53, 75, 63, 0.15), 0 2px 8px rgba(41, 45, 41, 0.04)"
               style={{
-                padding: '30px 26px',
+                padding: 'clamp(22px, 3vw, 30px) clamp(18px, 2.5vw, 26px)',
                 backgroundColor: 'var(--color-surface)',
                 borderRadius: 'var(--radius-xl)',
                 border: '1px solid var(--border-subtle)',
@@ -942,7 +982,7 @@ export default function HomePage() {
                       transition: 'all 0.22s ease'
                     }}
                   >
-                    Take the right action
+                    Take targeted action
                   </h3>
                   <p
                     style={{
@@ -953,7 +993,7 @@ export default function HomePage() {
                       transition: 'transform 0.22s ease'
                     }}
                   >
-                    Assistants draft and review replies; clients review their dedicated queue to sign off or delegate in two clicks.
+                    Assistants draft and verify replies; clients review their focused queue to sign off, mark handled, or delegate with specific directives.
                   </p>
                 </>
               )}
@@ -976,7 +1016,7 @@ export default function HomePage() {
           width: '100%'
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '52px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <span
             style={{
               fontSize: '11px',
@@ -986,12 +1026,12 @@ export default function HomePage() {
               color: 'var(--color-primary)'
             }}
           >
-            Dual Experiences
+            Dual Workspaces
           </span>
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(26px, 3.5vw, 36px)',
+              fontSize: 'clamp(24px, 3.5vw, 36px)',
               fontWeight: 700,
               color: 'var(--color-charcoal)',
               marginTop: '8px',
@@ -1000,12 +1040,23 @@ export default function HomePage() {
           >
             Built for assistants and clients to work as one
           </h2>
+          <p
+            style={{
+              fontSize: '14px',
+              color: 'var(--color-charcoal-muted)',
+              maxWidth: '640px',
+              margin: '8px auto 0',
+              lineHeight: 1.5
+            }}
+          >
+            Elena (Assistant) manages correspondence volume and logistics. Marcus (Client) reviews only strategic decisions requiring personal authority.
+          </p>
         </div>
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             gap: '24px'
           }}
         >
@@ -1015,7 +1066,7 @@ export default function HomePage() {
             hoverBorderColor="var(--color-primary)"
             hoverShadow="0 24px 50px -12px rgba(53, 75, 63, 0.22), 0 2px 8px rgba(41, 45, 41, 0.04)"
             style={{
-              padding: '36px 32px',
+              padding: 'clamp(24px, 4vw, 36px) clamp(20px, 3.5vw, 32px)',
               backgroundColor: 'var(--color-surface)',
               borderRadius: 'var(--radius-xl)',
               border: '1.5px solid var(--color-resp-assistant-border)',
@@ -1054,8 +1105,8 @@ export default function HomePage() {
                     <UserCheck size={18} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Personal Assistants</h3>
-                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Elena Rostova</div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Personal Assistants: Elena</h3>
+                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Elena — Assistant</div>
                   </div>
                 </div>
 
@@ -1068,7 +1119,7 @@ export default function HomePage() {
                     transition: 'transform 0.22s ease'
                   }}
                 >
-                  Manage incoming volume with total clarity. Review AI responsibility triage, override classifications when context demands, verify summaries, and draft contextual replies for human review.
+                  Manage executive correspondence volume with total clarity. Review AI responsibility triage, override classifications when context demands, and draft contextual replies with complete human control.
                 </p>
 
                 <ul
@@ -1112,7 +1163,7 @@ export default function HomePage() {
                     icon={ArrowRight}
                     iconPosition="right"
                     onClick={() => handleLaunchDemo('assistant')}
-                    style={{ width: '100%', justifyContent: 'center' }}
+                    style={{ width: '100%', justifyContent: 'center', minHeight: '44px' }}
                   >
                     Launch Assistant Demo (Elena)
                   </Button>
@@ -1127,7 +1178,7 @@ export default function HomePage() {
             hoverBorderColor="var(--color-resp-client)"
             hoverShadow="0 24px 50px -12px rgba(181, 121, 72, 0.22), 0 2px 8px rgba(41, 45, 41, 0.04)"
             style={{
-              padding: '36px 32px',
+              padding: 'clamp(24px, 4vw, 36px) clamp(20px, 3.5vw, 32px)',
               backgroundColor: 'var(--color-surface)',
               borderRadius: 'var(--radius-xl)',
               border: '1.5px solid var(--color-resp-client-border)',
@@ -1166,8 +1217,8 @@ export default function HomePage() {
                     <UserRound size={18} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Busy Clients</h3>
-                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Marcus Vance</div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Busy Clients: Marcus</h3>
+                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Marcus — Client</div>
                   </div>
                 </div>
 
@@ -1228,7 +1279,8 @@ export default function HomePage() {
                       width: '100%',
                       justifyContent: 'center',
                       borderColor: 'var(--color-resp-client-border)',
-                      color: 'var(--color-resp-client)'
+                      color: 'var(--color-resp-client)',
+                      minHeight: '44px'
                     }}
                   >
                     Launch Client Demo (Marcus)
@@ -1307,7 +1359,7 @@ export default function HomePage() {
                   transition: 'transform 0.22s ease'
                 }}
               >
-                Ready to inspect the prototype?
+                Ready to explore the prototype?
               </h2>
 
               <p
@@ -1321,7 +1373,7 @@ export default function HomePage() {
                   transition: 'transform 0.22s ease'
                 }}
               >
-                Experience Relay's dual-workspace architecture with realistic executive data and contextual email intelligence.
+                Experience Relay's dual-workspace architecture with realistic executive correspondence, automated AI triage, and simulated mailbox sync.
               </p>
 
               <div
@@ -1341,15 +1393,15 @@ export default function HomePage() {
                   icon={Sparkles}
                   iconPosition="right"
                   onClick={() => setShowDemoModal(true)}
-                  style={{ padding: '11px 26px', fontSize: '14px', fontWeight: 600 }}
+                  style={{ minHeight: '44px', padding: '12px 28px', fontSize: '14.5px', fontWeight: 600 }}
                 >
-                  Explore live demo
+                  Explore Live Demo
                 </Button>
                 <Button
                   variant="secondary"
                   size="lg"
                   onClick={() => navigate('/login')}
-                  style={{ padding: '11px 22px', fontSize: '14px' }}
+                  style={{ minHeight: '44px', padding: '12px 24px', fontSize: '14.5px' }}
                 >
                   Sign in with credentials
                 </Button>
@@ -1448,7 +1500,7 @@ export default function HomePage() {
                 <a href="#how-it-works" onClick={scrollToHowItWorks} className="footer-link">Workflow Engine</a>
                 <a href="#roles" className="footer-link">Dual Workspaces</a>
                 <span onClick={() => setShowDemoModal(true)} className="footer-link" style={{ cursor: 'pointer' }}>
-                  Interactive Simulator
+                  Explore Live Demo
                 </span>
               </div>
             </div>
@@ -1473,24 +1525,24 @@ export default function HomePage() {
                 Protocol & Access
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '13px' }}>
-                <Link to="/login" className="footer-link">Assistant Sign In</Link>
-                <Link to="/signup" className="footer-link">Create Workspace</Link>
-                <button
-                  type="button"
-                  onClick={() => handleLaunchDemo('client')}
-                  className="footer-link"
-                  style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
-                >
-                  Marcus Vance Client View
-                </button>
                 <button
                   type="button"
                   onClick={() => handleLaunchDemo('assistant')}
                   className="footer-link"
                   style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
                 >
-                  Elena Rostova Assistant View
+                  Elena — Assistant View
                 </button>
+                <button
+                  type="button"
+                  onClick={() => handleLaunchDemo('client')}
+                  className="footer-link"
+                  style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
+                >
+                  Marcus — Client View
+                </button>
+                <Link to="/login" className="footer-link">Assistant Sign In</Link>
+                <Link to="/signup" className="footer-link">Create Workspace</Link>
               </div>
             </div>
           </div>
@@ -1512,8 +1564,8 @@ export default function HomePage() {
             <div>
               © 2026 Relay. All rights reserved.
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-              <span className="keycap">Demo environment</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <span className="keycap">Demo environment • Simulated Mailboxes</span>
               <span className="keycap">Human Override Available</span>
             </div>
           </div>
@@ -1560,7 +1612,7 @@ export default function HomePage() {
                 <div>
                   <h3 style={{ fontSize: '17px', fontWeight: 600 }}>Select Demo Persona</h3>
                   <p style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>
-                    Instant access without passwords
+                    Instant access to simulated workspaces — no passwords required
                   </p>
                 </div>
                 <button
@@ -1611,10 +1663,10 @@ export default function HomePage() {
                     </div>
                     <div>
                       <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-primary)' }}>
-                        Elena Rostova (Executive Assistant)
+                        Elena — Assistant
                       </div>
                       <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)' }}>
-                        Full triage inbox, AI drafting, Copilot & overview
+                        Executive Assistant • Full triage inbox, AI drafting & overview
                       </div>
                     </div>
                   </div>
@@ -1659,10 +1711,10 @@ export default function HomePage() {
                     </div>
                     <div>
                       <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-resp-client)' }}>
-                        Marcus Vance (Managing Partner)
+                        Marcus — Client
                       </div>
                       <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)' }}>
-                        Executive attention queue, Mark Handled & delegation
+                        Managing Partner • Executive decision queue, Mark Handled & delegation
                       </div>
                     </div>
                   </div>

@@ -463,6 +463,26 @@ select,
   transform: translateY(0);
 }
 
+/* Public Homepage Hero CTA Responsive Group */
+.home-hero-cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .home-hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+  .home-hero-cta-group > * {
+    width: 100% !important;
+  }
+}
+
 /* Public Navigation & Footer Links */
 .public-nav-link {
   transition: color var(--transition-hover), background-color var(--transition-hover), transform var(--transition-hover) !important;
