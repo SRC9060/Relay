@@ -18,13 +18,15 @@ import {
   markCompleted,
   markHandled,
   delegateToAssistant,
-  getCounts
+  getCounts,
+  markAllRead
 } from '../controllers/conversations.controller.js';
 
 const router = Router();
 
 // Specific routes first
 router.get('/counts', getCounts);
+router.post('/mark-all-read', markAllRead);
 router.get('/ai-status', getAiStatus);
 router.post('/copilot', askCopilot);
 

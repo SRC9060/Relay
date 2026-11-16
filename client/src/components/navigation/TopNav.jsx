@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useAccounts } from '../../context/AccountContext';
+import { useConversations } from '../../context/ConversationContext';
 import Button from '../common/Button';
 
 export default function TopNav({ onToggleMobileMenu }) {
@@ -27,6 +28,13 @@ export default function TopNav({ onToggleMobileMenu }) {
     syncAll,
     lastSyncTime
   } = useAccounts();
+  const {
+    conversations = [],
+    counts,
+    markAsRead,
+    markAllAsRead,
+    selectConversation
+  } = useConversations();
 
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -41,29 +49,44 @@ export default function TopNav({ onToggleMobileMenu }) {
     return `Synced ${minutes}m ago`;
   };
 
-  const notifications = [
-    {
-      id: 1,
-      title: 'Board meeting approval needed',
-      time: '10m ago',
-      unread: true,
-      category: 'Client Action'
-    },
-    {
-      id: 2,
-      title: 'Catering vendor confirmed for Thursday',
-      time: '1h ago',
-      unread: false,
-      category: 'Assistant'
-    },
-    {
-      id: 3,
-      title: 'New simulated emails synced',
-      time: '2h ago',
-      unread: false,
-      category: 'System'
-    }
-  ];
+  const formatRelativeTime = (iso) => {
+    if (!iso) return '';
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffMins < 60) return `${Math.max(1, diffMins)}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    return `${diffDays}d ago`;
+  };
+
+  const notifications = useMemo(() => {
+    if (!conversations || conversations.length === 0) return [];
+    const unread = conversations.filter((c) => !c.isArchived && c.isUnread);
+    const read = conversations.filter((c) => !c.isArchived && !c.isUnread);
+    const combined = [...unread, ...read].slice(0, 8);
+
+    return combined.map((c) => {
+      let category = 'Correspondence';
+      if (c.responsibility === 'client') category = 'Client Decision';
+      else if (c.responsibility === 'assistant') category = 'Assistant Action';
+      else if (c.category === 'meetings' || c.category === 'scheduling') category = 'Meeting';
+      else if (c.responsibility === 'none') category = 'Informational';
+
+      return {
+        id: c.id,
+        conversationId: c.id,
+        title: c.subject,
+        sender: c.sender?.name || 'Unknown',
+        time: formatRelativeTime(c.lastMessageAt),
+        unread: Boolean(c.isUnread),
+        category
+      };
+    });
+  }, [conversations]);
+
+  const unreadNotificationsCount = counts?.unread ?? notifications.filter((n) => n.unread).length;
 
   return (
     <header
@@ -246,17 +269,19 @@ export default function TopNav({ onToggleMobileMenu }) {
             aria-label="View notifications"
           >
             <Bell size={15} />
-            <span
-              style={{
-                position: 'absolute',
-                top: '5px',
-                right: '6px',
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--color-resp-client)'
-              }}
-            />
+            {unreadNotificationsCount > 0 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  right: '6px',
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-resp-client)'
+                }}
+              />
+            )}
           </button>
 
           <AnimatePresence>
@@ -270,7 +295,7 @@ export default function TopNav({ onToggleMobileMenu }) {
                   position: 'absolute',
                   right: 0,
                   top: '40px',
-                  width: '280px',
+                  width: '300px',
                   backgroundColor: 'var(--color-surface)',
                   border: 'var(--border-subtle)',
                   borderRadius: 'var(--radius-lg)',
@@ -290,36 +315,95 @@ export default function TopNav({ onToggleMobileMenu }) {
                   }}
                 >
                   <span style={{ fontSize: '12px', fontWeight: 600 }}>Notifications</span>
-                  <span style={{ fontSize: '11px', color: 'var(--color-primary)', cursor: 'pointer' }}>
-                    Mark all read
-                  </span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {notifications.map((n) => (
-                    <div
-                      key={n.id}
+                  {unreadNotificationsCount > 0 ? (
+                    <button
+                      type="button"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        await markAllAsRead();
+                      }}
                       style={{
-                        padding: '8px',
-                        borderRadius: 'var(--radius-sm)',
-                        backgroundColor: n.unread ? 'var(--color-surface-subtle)' : 'transparent',
-                        fontSize: '12px'
+                        fontSize: '11px',
+                        color: 'var(--color-primary)',
+                        cursor: 'pointer',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        fontWeight: 600
                       }}
                     >
-                      <div style={{ fontWeight: n.unread ? 600 : 400 }}>{n.title}</div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          marginTop: '3px',
-                          fontSize: '10px',
-                          color: 'var(--color-charcoal-muted)'
-                        }}
-                      >
-                        <span>{n.category}</span>
-                        <span className="tabular-nums">{n.time}</span>
-                      </div>
+                      Mark all read
+                    </button>
+                  ) : (
+                    <span style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }}>All read</span>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '320px', overflowY: 'auto' }}>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '16px 8px', textAlign: 'center', fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>
+                      No notifications.
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        onClick={async () => {
+                          if (n.unread) {
+                            await markAsRead(n.conversationId);
+                          }
+                          selectConversation(n.conversationId);
+                          navigate(`/app/inbox?id=${n.conversationId}`);
+                          setShowNotifications(false);
+                        }}
+                        style={{
+                          padding: '8px 10px',
+                          borderRadius: 'var(--radius-sm)',
+                          backgroundColor: n.unread ? 'var(--color-surface-subtle)' : 'transparent',
+                          fontSize: '12px',
+                          cursor: 'pointer',
+                          transition: 'background-color var(--transition-fast)'
+                        }}
+                        className="notification-item-row"
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
+                          <div
+                            style={{
+                              fontWeight: n.unread ? 600 : 400,
+                              color: 'var(--color-charcoal)',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {n.title}
+                          </div>
+                          {n.unread && (
+                            <span
+                              style={{
+                                width: '6px',
+                                height: '6px',
+                                borderRadius: '50%',
+                                backgroundColor: 'var(--color-primary)',
+                                flexShrink: 0
+                              }}
+                            />
+                          )}
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginTop: '3px',
+                            fontSize: '10px',
+                            color: 'var(--color-charcoal-muted)'
+                          }}
+                        >
+                          <span>{n.category}</span>
+                          <span className="tabular-nums">{n.time}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </motion.div>
             )}

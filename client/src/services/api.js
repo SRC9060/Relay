@@ -91,6 +91,8 @@ function saveLocalAccounts(accounts) {
   }
 }
 
+let _nodeMemConversations = null;
+
 function getLocalConversations() {
   if (typeof localStorage !== 'undefined') {
     const cached = localStorage.getItem(LOCAL_CONVERSATIONS_KEY);
@@ -101,10 +103,14 @@ function getLocalConversations() {
         // ignore
       }
     }
+  } else if (_nodeMemConversations) {
+    return _nodeMemConversations;
   }
   const cloned = JSON.parse(JSON.stringify(fallbackConversations));
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem(LOCAL_CONVERSATIONS_KEY, JSON.stringify(cloned));
+  } else {
+    _nodeMemConversations = cloned;
   }
   return cloned;
 }
@@ -112,6 +118,8 @@ function getLocalConversations() {
 function saveLocalConversations(list) {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem(LOCAL_CONVERSATIONS_KEY, JSON.stringify(list));
+  } else {
+    _nodeMemConversations = list;
   }
 }
 
@@ -552,6 +560,30 @@ export const api = {
       console.warn('[Relay API] Using local fallback for counts');
       const all = getLocalConversations();
       return computeLocalCounts(all, accountId);
+    }
+  },
+
+  async markAllRead(accountId) {
+    try {
+      const res = await fetch(`${API_BASE}/conversations/mark-all-read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accountId })
+      });
+      if (!res.ok) throw new Error('Mark all read failed');
+      const json = await res.json();
+      return json;
+    } catch (e) {
+      console.warn('[Relay API] Using local fallback for mark all read');
+      const all = getLocalConversations();
+      all.forEach((c) => {
+        if (!accountId || accountId === 'all' || c.accountId === accountId) {
+          c.isUnread = false;
+        }
+      });
+      saveLocalConversations(all);
+      const counts = computeLocalCounts(all, accountId);
+      return { success: true, counts };
     }
   },
 

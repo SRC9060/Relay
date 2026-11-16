@@ -336,3 +336,77 @@ test('Public HomePage implements interactive 3D hero visual with perspective, ti
   assert.ok(code.includes('Relay Autonomous Routing Engine'), 'HomePage displays autonomous routing engine banner');
   assert.ok(code.includes('whileInView'), 'HomePage implements scroll reveals for lower sections');
 });
+
+test('Brand logo across Sidebar, ClientTopBar, and AuthLayout is purely decorative, non-interactive, and non-selectable', () => {
+  const sidebarCode = fs.readFileSync(path.resolve('./src/components/navigation/Sidebar.jsx'), 'utf-8');
+  const clientTopBarCode = fs.readFileSync(path.resolve('./src/pages/client/components/ClientTopBar.jsx'), 'utf-8');
+  const authLayoutCode = fs.readFileSync(path.resolve('./src/layouts/AuthLayout.jsx'), 'utf-8');
+  const globalCss = fs.readFileSync(path.resolve('./src/styles/global.css'), 'utf-8');
+
+  // Decorative & non-interactive checks
+  assert.ok(sidebarCode.includes('relay-brand-container'), 'Sidebar uses relay-brand-container');
+  assert.ok(sidebarCode.includes('tabIndex={-1}'), 'Sidebar brand container has tabIndex={-1}');
+  assert.ok(sidebarCode.includes('role="presentation"'), 'Sidebar brand container has role="presentation"');
+  assert.ok(sidebarCode.includes('relay-brand-mark'), 'Sidebar has relay-brand-mark');
+  assert.ok(!sidebarCode.includes('<Link to="/" className="brand-link"'), 'Sidebar does not wrap brand in Link');
+
+  assert.ok(clientTopBarCode.includes('relay-brand-container'), 'ClientTopBar uses relay-brand-container');
+  assert.ok(clientTopBarCode.includes('tabIndex={-1}'), 'ClientTopBar brand container has tabIndex={-1}');
+  assert.ok(clientTopBarCode.includes('relay-brand-mark'), 'ClientTopBar has relay-brand-mark');
+
+  assert.ok(authLayoutCode.includes('relay-brand-container'), 'AuthLayout uses relay-brand-container');
+  assert.ok(authLayoutCode.includes('tabIndex={-1}'), 'AuthLayout brand container has tabIndex={-1}');
+  assert.ok(!authLayoutCode.includes('<Link to="/" className="brand-link"'), 'AuthLayout does not wrap brand in Link');
+
+  // CSS guarantees
+  assert.ok(globalCss.includes('.relay-brand-mark'), 'global.css defines .relay-brand-mark');
+  assert.ok(globalCss.includes('user-select: none !important'), 'global.css prevents text selection on brand');
+  assert.ok(globalCss.includes('pointer-events: none !important'), 'global.css disables pointer events on brand mark');
+});
+
+test('TopNav notification bell dot and Mark all read are bound to live conversation unread state', () => {
+  const code = fs.readFileSync(path.resolve('./src/components/navigation/TopNav.jsx'), 'utf-8');
+  assert.ok(code.includes('unreadNotificationsCount > 0'), 'Bell dot conditionally rendered when unreadNotificationsCount > 0');
+  assert.ok(code.includes('markAllAsRead'), 'TopNav connects to markAllAsRead handler');
+  assert.ok(code.includes('markAsRead'), 'TopNav connects to markAsRead handler');
+  assert.ok(code.includes('useConversations'), 'TopNav integrates useConversations');
+  assert.ok(code.includes('Mark all read'), 'TopNav provides Mark all read trigger');
+});
+
+test('ConversationContext provides explicit markAsRead and markAllAsRead handlers with optimistic updates', () => {
+  const code = fs.readFileSync(path.resolve('./src/context/ConversationContext.jsx'), 'utf-8');
+  assert.ok(code.includes('markAsRead = useCallback'), 'ConversationContext implements markAsRead');
+  assert.ok(code.includes('markAllAsRead = useCallback'), 'ConversationContext implements markAllAsRead');
+  assert.ok(code.includes('markAsRead,'), 'ConversationContext exports markAsRead');
+  assert.ok(code.includes('markAllAsRead,'), 'ConversationContext exports markAllAsRead');
+});
+
+test('ConversationListItem and AIReplyTriageCard display Handled by Client status while preserving historical classification', () => {
+  const itemCode = fs.readFileSync(path.resolve('./src/pages/inbox/components/ConversationListItem.jsx'), 'utf-8');
+  assert.ok(itemCode.includes('Handled by Client'), 'ConversationListItem displays Handled by Client');
+  assert.ok(itemCode.includes('<CheckCircle2'), 'ConversationListItem displays CheckCircle2 for completed');
+
+  const cardCode = fs.readFileSync(path.resolve('./src/pages/inbox/components/AIReplyTriageCard.jsx'), 'utf-8');
+  assert.ok(cardCode.includes('Action Completed by Marcus Vance (Client)'), 'AIReplyTriageCard displays Action Completed by Marcus Vance');
+  assert.ok(cardCode.includes('Historical responsibility retained'), 'AIReplyTriageCard explains historical audit trail');
+});
+
+test('API service supports markAllRead and accurately persists unread status reset', async () => {
+  const { api } = await import('../src/services/api.js');
+  const res = await api.markAllRead();
+  assert.equal(res.success, true, 'markAllRead returns success: true');
+  assert.equal(res.counts.unread, 0, 'Unread count drops to 0 after markAllRead');
+
+  const refreshed = await api.getConversations({ segment: 'all' });
+  assert.ok(refreshed.data.every(c => c.isUnread === false), 'All conversations are marked isUnread: false');
+});
+
+test('API service markHandled completes conversation, sets handledBy client, and decrements clientQueue count', async () => {
+  const { api } = await import('../src/services/api.js');
+  const res = await api.markHandled('conv_01');
+  assert.equal(res.success, true, 'markHandled returns success: true');
+  assert.equal(res.data.actionStatus, 'completed', 'Action status is set to completed');
+  assert.equal(res.data.handledBy, 'client', 'HandledBy is marked as client');
+  assert.equal(res.data.responsibility, 'client', 'Original client responsibility classification is preserved');
+  assert.ok(res.counts.clientQueue < 5, 'Client queue count decrements');
+});

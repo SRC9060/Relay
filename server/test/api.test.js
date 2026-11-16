@@ -515,6 +515,22 @@ test('Persistence: Created user persists and is retrievable via demo-users', asy
   assert.ok(usersJson.data.some((u) => u.email === uniqueEmail));
 });
 
+test('POST /api/conversations/mark-all-read marks unread conversations as read', async () => {
+  const res = await fetch(`${baseUrl}/api/conversations/mark-all-read`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  });
+  assert.equal(res.status, 200);
+  const json = await res.json();
+  assert.equal(json.success, true);
+  assert.equal(json.counts.unread, 0);
+
+  const checkRes = await fetch(`${baseUrl}/api/conversations`);
+  const checkJson = await checkRes.json();
+  assert.ok(checkJson.data.every((c) => c.isUnread === false));
+});
+
 test('Idempotent Seeding: Running seeder multiple times never duplicates conversations', async () => {
   const beforeRes = await fetch(`${baseUrl}/api/conversations`);
   const beforeJson = await beforeRes.json();

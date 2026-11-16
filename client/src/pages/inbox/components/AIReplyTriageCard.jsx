@@ -9,7 +9,8 @@ import {
   X,
   FileText,
   Calendar,
-  Clock
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
 import Badge from '../../../components/common/Badge';
 import Button from '../../../components/common/Button';
@@ -205,6 +206,40 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
           {aiReasoning || 'Conversation content evaluated against executive delegated authority criteria.'}
         </span>
       </div>
+
+      {/* Handled / Completed Status Notice */}
+      {conversation.actionStatus === 'completed' && (
+        <div
+          style={{
+            marginLeft: '32px',
+            padding: '10px 14px',
+            backgroundColor: 'var(--color-success-bg)',
+            border: '1px solid rgba(42, 110, 78, 0.25)',
+            borderRadius: 'var(--radius-md)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '12px',
+            color: 'var(--color-success)',
+            fontWeight: 500
+          }}
+        >
+          <CheckCircle2 size={15} />
+          <div>
+            <strong>
+              {conversation.handledBy === 'client' || conversation.responsibility === 'client'
+                ? 'Action Completed by Marcus Vance (Client)'
+                : 'Action Completed'}
+            </strong>
+            <span style={{ marginLeft: '6px', color: 'var(--color-charcoal-muted)', fontSize: '11px', fontWeight: 400 }}>
+              {conversation.handledAt
+                ? `Decided on ${new Date(conversation.handledAt).toLocaleDateString([], { month: 'short', day: 'numeric' })} at ${new Date(conversation.handledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                : 'Task completed'}{' '}
+              — Historical responsibility retained for audit trail.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Low-confidence / Needs Review Banner */}
       {isLowConfidence && (

@@ -246,7 +246,7 @@ export default function ConversationListItem({
             }}
           >
             <CheckCircle2 size={10} />
-            Completed
+            {conversation.handledBy === 'client' || responsibility === 'client' ? 'Handled by Client' : 'Completed'}
           </span>
         )}
 

@@ -363,3 +363,13 @@ export const getCounts = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const markAllRead = async (req, res) => {
+  try {
+    const { accountId } = req.body || {};
+    const counts = await storage.markAllRead(accountId);
+    res.json({ success: true, message: 'All conversations marked as read', counts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

@@ -52,8 +52,15 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
     >
       {/* Brand & Client Identity */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div
+          className="relay-brand-container"
+          role="presentation"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
           <div
+            className="relay-brand-mark"
             style={{
               width: '28px',
               height: '28px',
@@ -63,6 +70,7 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              fontFamily: 'var(--font-heading)',
               fontWeight: 700,
               fontSize: '13px',
               letterSpacing: '-0.02em'
@@ -71,6 +79,7 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
             R
           </div>
           <span
+            className="relay-brand-wordmark"
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,

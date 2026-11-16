@@ -46,7 +46,7 @@ export default function ConversationListHeader() {
   const responsibilityTabs = [
     { id: 'all', label: 'All', count: countsLoaded ? (counts?.all ?? 0) : '—' },
     { id: 'assistant_reply', label: 'Assistant to Reply', count: countsLoaded ? (counts?.assistantReply ?? 0) : '—', color: 'var(--color-resp-assistant)' },
-    { id: 'client_reply', label: 'Client to Reply', count: countsLoaded ? (counts?.clientReply ?? 0) : '—', color: 'var(--color-resp-client)' },
+    { id: 'client_reply', label: 'Client to Reply', count: countsLoaded ? (counts?.clientQueue ?? counts?.clientReply ?? 0) : '—', color: 'var(--color-resp-client)' },
     { id: 'no_reply', label: 'No Reply Needed', count: countsLoaded ? (counts?.noReply ?? 0) : '—', color: 'var(--color-resp-none)' },
     { id: 'needs_review', label: 'Needs Review', count: countsLoaded ? (counts?.needsReview ?? 0) : '—', color: 'var(--color-resp-review)' }
   ];

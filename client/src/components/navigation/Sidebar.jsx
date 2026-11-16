@@ -79,8 +79,15 @@ export default function Sidebar({ isOpen, onClose }) {
           justifyContent: 'space-between'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div
+          className="relay-brand-container"
+          role="presentation"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+        >
           <div
+            className="relay-brand-mark"
             style={{
               width: '30px',
               height: '30px',
@@ -89,17 +96,18 @@ export default function Sidebar({ isOpen, onClose }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#FFFFFF'
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: '15px',
+              letterSpacing: '-0.02em'
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-              <circle cx="10" cy="16" r="3.5" fill="#E7E9DF" />
-              <circle cx="22" cy="16" r="3.5" fill="#FFFFFF" />
-              <path d="M12.5 16h6" stroke="#E7E9DF" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
+            R
           </div>
           <div>
             <div
+              className="relay-brand-wordmark"
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '16px',
@@ -115,7 +123,8 @@ export default function Sidebar({ isOpen, onClose }) {
               style={{
                 fontSize: '11px',
                 color: 'var(--color-charcoal-muted)',
-                fontWeight: 400
+                fontWeight: 400,
+                pointerEvents: 'none'
               }}
             >
               Assistant Workspace

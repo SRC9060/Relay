@@ -16,6 +16,7 @@ import { useConversations } from '../../../context/ConversationContext';
 export default function ConversationActionBar({ conversation, onNavigate }) {
   const {
     toggleRead,
+    markAsRead,
     toggleImportant,
     archiveConversation,
     restoreConversation,
@@ -45,7 +46,7 @@ export default function ConversationActionBar({ conversation, onNavigate }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
         {/* Read / Unread */}
         <button
-          onClick={() => toggleRead(id)}
+          onClick={() => (isUnread ? markAsRead(id) : toggleRead(id))}
           className="action-bar-btn"
           title={isUnread ? 'Mark as read' : 'Mark as unread'}
         >
@@ -89,8 +90,8 @@ export default function ConversationActionBar({ conversation, onNavigate }) {
           </button>
         )}
 
-        {/* Mark Completed */}
-        {actionStatus !== 'completed' && (
+        {/* Mark Completed or Completed Status */}
+        {actionStatus !== 'completed' ? (
           <button
             onClick={() => markCompleted(id)}
             className="action-bar-btn"
@@ -99,6 +100,23 @@ export default function ConversationActionBar({ conversation, onNavigate }) {
             <CheckCircle2 size={13} color="var(--color-success)" />
             <span>Complete</span>
           </button>
+        ) : (
+          <span
+            className="action-bar-btn"
+            style={{
+              backgroundColor: 'var(--color-success-bg)',
+              borderColor: 'rgba(42, 110, 78, 0.25)',
+              color: 'var(--color-success)',
+              cursor: 'default',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title={conversation.handledBy === 'client' ? 'Handled by client Marcus Vance' : 'Action marked complete'}
+          >
+            <CheckCircle2 size={13} color="var(--color-success)" />
+            <span>{conversation.handledBy === 'client' ? 'Handled by Client' : 'Completed'}</span>
+          </span>
         )}
 
         {/* Vertical Divider */}

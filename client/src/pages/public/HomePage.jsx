@@ -186,7 +186,7 @@ export default function HomePage() {
         {/* Brand */}
         <Link to="/" className="brand-link" style={{ textDecoration: 'none' }}>
           <div
-            className="brand-icon-box"
+            className="brand-icon-box relay-brand-mark"
             style={{
               width: '32px',
               height: '32px',
@@ -196,6 +196,7 @@ export default function HomePage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              fontFamily: 'var(--font-heading)',
               fontWeight: 700,
               fontSize: '15px',
               letterSpacing: '-0.02em'
@@ -204,6 +205,7 @@ export default function HomePage() {
             R
           </div>
           <span
+            className="relay-brand-wordmark"
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,

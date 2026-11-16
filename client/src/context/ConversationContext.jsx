@@ -156,8 +156,86 @@ export function ConversationProvider({ children }) {
     }).catch(() => {});
   }, [selectedAccountId]);
 
+  // Explicitly Mark Conversation as Read
+  const markAsRead = useCallback(async (id) => {
+    let wasUnread = false;
+
+    setConversations((prev) => {
+      const target = prev.find((c) => c.id === id);
+      if (!target || !target.isUnread) return prev;
+      wasUnread = true;
+      return prev.map((c) => (c.id === id ? { ...c, isUnread: false } : c));
+    });
+
+    if (!wasUnread) return;
+
+    setSelectedConversation((prev) => {
+      if (!prev || prev.id !== id) return prev;
+      return { ...prev, isUnread: false };
+    });
+
+    setCounts((prev) => ({
+      ...prev,
+      unread: Math.max(0, prev.unread - 1)
+    }));
+
+    try {
+      const res = await api.updateConversation(id, { isUnread: false });
+      notifyConversationChange();
+      if (res && res.counts) setCounts(res.counts);
+    } catch (err) {
+      console.error('Failed to mark conversation as read:', err);
+      // Rollback
+      setConversations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, isUnread: true } : c))
+      );
+      setSelectedConversation((prev) => {
+        if (!prev || prev.id !== id) return prev;
+        return { ...prev, isUnread: true };
+      });
+      setCounts((prev) => ({
+        ...prev,
+        unread: prev.unread + 1
+      }));
+      showToast('Failed to mark as read. Reverted.');
+    }
+  }, [showToast]);
+
+  // Explicitly Mark All Conversations as Read
+  const markAllAsRead = useCallback(async () => {
+    const backup = conversations.map((c) => ({ id: c.id, isUnread: c.isUnread }));
+    const unreadCount = conversations.filter((c) => c.isUnread).length;
+    if (unreadCount === 0) return;
+
+    setConversations((prev) => prev.map((c) => ({ ...c, isUnread: false })));
+    setSelectedConversation((prev) => (prev ? { ...prev, isUnread: false } : null));
+    setCounts((prev) => ({ ...prev, unread: 0 }));
+
+    try {
+      const res = await api.markAllRead(selectedAccountId);
+      notifyConversationChange();
+      if (res && res.counts) setCounts(res.counts);
+      showToast('All notifications and conversations marked as read');
+    } catch (err) {
+      console.error('Failed to mark all as read:', err);
+      // Rollback
+      setConversations((prev) =>
+        prev.map((c) => {
+          const orig = backup.find((b) => b.id === c.id);
+          return orig ? { ...c, isUnread: orig.isUnread } : c;
+        })
+      );
+      setCounts((prev) => ({ ...prev, unread: unreadCount }));
+      showToast('Failed to mark all read. Reverted.');
+    }
+  }, [conversations, selectedAccountId, showToast]);
+
   // Toggle Read / Unread
   const toggleRead = useCallback(async (id, forceRead) => {
+    if (forceRead === true) {
+      return markAsRead(id);
+    }
+
     let newIsUnread = false;
 
     setConversations((prev) => {
@@ -181,10 +259,12 @@ export function ConversationProvider({ children }) {
       const res = await api.updateConversation(id, { isUnread: newIsUnread });
       notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
+      showToast(newIsUnread ? 'Marked as unread' : 'Marked as read');
     } catch (err) {
       console.error('Failed to update read status:', err);
+      showToast('Failed to update read status');
     }
-  }, []);
+  }, [markAsRead, showToast]);
 
   // Select a conversation by ID
   const selectConversation = useCallback(async (id) => {
@@ -574,6 +654,8 @@ export function ConversationProvider({ children }) {
         aiStatus,
         selectConversation,
         toggleRead,
+        markAsRead,
+        markAllAsRead,
         toggleImportant,
         archiveConversation,
         restoreConversation,

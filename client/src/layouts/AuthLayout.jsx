@@ -37,9 +37,15 @@ export default function AuthLayout() {
           boxSizing: 'border-box'
         }}
       >
-        <Link to="/" className="brand-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+        <div
+          className="relay-brand-container"
+          role="presentation"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}
+        >
           <div
-            className="brand-icon-box"
+            className="brand-icon-box relay-brand-mark"
             style={{
               width: '32px',
               height: '32px',
@@ -49,6 +55,7 @@ export default function AuthLayout() {
               alignItems: 'center',
               justifyContent: 'center',
               color: '#FFFFFF',
+              fontFamily: 'var(--font-heading)',
               fontWeight: 700,
               fontSize: '15px',
               letterSpacing: '-0.02em'
@@ -58,6 +65,7 @@ export default function AuthLayout() {
           </div>
           <div>
             <span
+              className="relay-brand-wordmark"
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '18px',
@@ -69,7 +77,7 @@ export default function AuthLayout() {
               Relay
             </span>
           </div>
-        </Link>
+        </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span

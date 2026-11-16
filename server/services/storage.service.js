@@ -749,6 +749,24 @@ class StorageService {
     return conv;
   }
 
+  async markAllRead(accountId) {
+    if (this.isDbReady()) {
+      const query = { isUnread: true };
+      if (accountId && accountId !== 'all') {
+        query.accountId = accountId;
+      }
+      await Conversation.updateMany(query, { $set: { isUnread: false } });
+      return await this.getCounts(accountId);
+    }
+
+    this._memConversations.forEach((c) => {
+      if (!accountId || accountId === 'all' || c.accountId === accountId) {
+        c.isUnread = false;
+      }
+    });
+    return await this.getCounts(accountId);
+  }
+
   async getCounts(accountId) {
     if (this.isDbReady()) {
       const baseQuery = {};
