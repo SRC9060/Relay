@@ -224,7 +224,12 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--color-resp-review)' }}>
             <AlertTriangle size={13} />
-            <span><strong>Needs Assistant Review:</strong> Confidence estimate is below threshold (0.75). Please verify responsibility.</span>
+            <span>
+              <strong>Needs Assistant Review:</strong>{' '}
+              {hasConfidence
+                ? 'Confidence is below the 0.75 threshold. Please verify responsibility.'
+                : 'This sample is flagged for review. Re-evaluate to calculate a current confidence score.'}
+            </span>
           </div>
         </div>
       )}
