@@ -38,7 +38,7 @@ export default function OverviewPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { accounts, syncAll, isSyncing } = useAccounts();
-  const { conversations, counts, selectConversation } = useConversations();
+  const { conversations, counts, countsLoaded, loading, selectConversation } = useConversations();
 
   // 1. Central Action Queue: unarchived action-required conversations
   const actionQueue = useMemo(() => {
@@ -66,8 +66,8 @@ export default function OverviewPage() {
     navigate(`/app/inbox?id=${threadId}`);
   };
 
-  const clientCount = counts.clientQueue ?? counts.clientReply ?? 5;
-  const assistantCount = counts.assistantReply ?? 7;
+  const clientCount = countsLoaded ? (counts.clientQueue ?? counts.clientReply ?? 0) : '—';
+  const assistantCount = countsLoaded ? (counts.assistantReply ?? 0) : '—';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -170,7 +170,7 @@ export default function OverviewPage() {
             <Clock size={15} color="var(--color-charcoal-muted)" />
           </div>
           <div style={{ fontSize: '28px', fontWeight: 700, fontFamily: 'var(--font-heading)', color: 'var(--color-charcoal)' }} className="tabular-nums">
-            {counts.waiting ?? 1}
+            {countsLoaded ? (counts.waiting ?? 0) : '—'}
           </div>
           <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)', marginTop: '4px' }}>
             Awaiting counterparty replies
@@ -186,7 +186,7 @@ export default function OverviewPage() {
             <Calendar size={15} color="var(--color-charcoal-muted)" />
           </div>
           <div style={{ fontSize: '28px', fontWeight: 700, fontFamily: 'var(--font-heading)', color: 'var(--color-charcoal)' }} className="tabular-nums">
-            {counts.meetings ?? 4}
+            {countsLoaded ? (counts.meetings ?? 0) : '—'}
           </div>
           <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)', marginTop: '4px' }}>
             Keynotes, private dining & summits
@@ -215,12 +215,14 @@ export default function OverviewPage() {
               iconPosition="right"
               onClick={() => navigate('/app/action-required')}
             >
-              View all ({counts.actionRequired ?? 11})
+              View all ({countsLoaded ? (counts.actionRequired ?? 0) : '—'})
             </Button>
           }
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {actionQueue.length === 0 ? (
+            {loading ? (
+              <div style={{ padding: '32px', textAlign: 'center', color: 'var(--color-charcoal-muted)', fontSize: '13px' }}>Loading action items…</div>
+            ) : actionQueue.length === 0 ? (
               <div style={{ padding: '32px', textAlign: 'center', color: 'var(--color-charcoal-muted)', fontSize: '13px' }}>
                 All action items are resolved. No pending triage required.
               </div>
