@@ -151,7 +151,7 @@ export default function ClientAttentionCard({
             flexShrink: 0
           }}
         />
-        <div style={{ fontSize: '11.5px', color: '#7D470F', lineHeight: 1.4 }}>
+        <div style={{ fontSize: '11.5px', color: 'var(--color-resp-client-dark)', lineHeight: 1.4 }}>
           <strong style={{ fontWeight: 600 }}>Why your input is required:</strong> {attentionReason}
         </div>
       </div>

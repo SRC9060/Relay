@@ -534,7 +534,7 @@ export default function HomePage() {
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--color-resp-client-border)',
                     fontSize: '12px',
-                    color: '#7D470F',
+                    color: 'var(--color-resp-client-dark)',
                     lineHeight: 1.5
                   }}
                 >

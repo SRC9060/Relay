@@ -181,7 +181,7 @@ export default function AuthVisualStage() {
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--color-resp-client-border)',
               fontSize: '11.5px',
-              color: '#7D470F',
+              color: 'var(--color-resp-client-dark)',
               lineHeight: 1.5
             }}
           >

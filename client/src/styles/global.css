@@ -400,7 +400,7 @@ select,
 
 .star-toggle-btn:hover {
   transform: scale(1.18);
-  color: #D48806 !important;
+  color: var(--color-warning) !important;
 }
 
 /* Top Navigation Interactive Controls */

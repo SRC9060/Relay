@@ -520,7 +520,7 @@ test('Idempotent Seeding: Running seeder multiple times never duplicates convers
   const beforeJson = await beforeRes.json();
   const initialCount = beforeJson.data.length;
 
-  if (process.env.MONGODB_URI) {
+  if (process.env.MONGODB_URI && getDbStatus().status === 'connected') {
     await seedDatabase();
   }
 

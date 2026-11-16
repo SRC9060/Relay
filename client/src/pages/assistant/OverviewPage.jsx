@@ -321,7 +321,7 @@ export default function OverviewPage() {
                     cursor: 'pointer'
                   }}
                 >
-                  <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#7D470F', marginBottom: '2px' }}>
+                  <div style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--color-resp-client-dark)', marginBottom: '2px' }}>
                     {item.subject}
                   </div>
                   <div style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>

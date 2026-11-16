@@ -217,11 +217,11 @@ export default function ClientConversationView({
                 <AlertCircle size={18} />
               </div>
               <div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: '#7D470F', marginBottom: '2px' }}>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-resp-client-dark)', marginBottom: '2px' }}>
                   Action Required from Marcus Vance
                 </div>
                 <div style={{ fontSize: '12.5px', color: 'var(--color-charcoal)', lineHeight: 1.45 }}>
-                  <span style={{ fontWeight: 600, color: '#7D470F' }}>Why your input is required: </span>
+                  <span style={{ fontWeight: 600, color: 'var(--color-resp-client-dark)' }}>Why your input is required: </span>
                   {attentionReason}
                 </div>
               </div>
