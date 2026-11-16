@@ -98,7 +98,7 @@ export default function AISummaryCard({ conversation }) {
             <div style={{ padding: '14px 16px', borderTop: 'var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {loading ? (
                 <div style={{ padding: '16px', textAlign: 'center', fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>
-                  Generating executive summary with Gemini...
+                  Generating executive summary...
                 </div>
               ) : summary ? (
                 <>
