@@ -9,8 +9,7 @@ import {
   X,
   FileText,
   Calendar,
-  Clock,
-  Cpu
+  Clock
 } from 'lucide-react';
 import Badge from '../../../components/common/Badge';
 import Button from '../../../components/common/Button';
@@ -100,23 +99,6 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
             AI Reply Triage
           </span>
           <Badge type={responsibility} size="sm" dot />
-
-          {/* Engine indicator */}
-          <span
-            style={{
-              fontSize: '11px',
-              padding: '2px 8px',
-              borderRadius: 'var(--radius-full)',
-              backgroundColor: 'rgba(41, 43, 41, 0.06)',
-              color: 'var(--color-charcoal-muted)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            <Cpu size={11} />
-            {aiSource === 'gemini' ? 'Gemini 1.5 Flash' : 'Executive Fallback Engine'}
-          </span>
 
           {isManualOverride && (
             <span
