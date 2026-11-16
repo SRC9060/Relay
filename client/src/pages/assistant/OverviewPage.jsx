@@ -261,6 +261,23 @@ export default function OverviewPage() {
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                         <Badge type={thread.responsibility} size="sm" dot />
+                        {(thread.confidenceScore || thread.aiConfidence) && (
+                          <span
+                            className="tabular-nums"
+                            style={{
+                              fontSize: '10.5px',
+                              fontWeight: 600,
+                              padding: '1px 6px',
+                              borderRadius: 'var(--radius-xs)',
+                              backgroundColor: 'var(--color-surface)',
+                              border: 'var(--border-subtle)',
+                              color: 'var(--color-charcoal-muted)'
+                            }}
+                            title={`AI Confidence: ${Math.round((thread.confidenceScore ?? thread.aiConfidence) * 100)}%`}
+                          >
+                            {Math.round((thread.confidenceScore ?? thread.aiConfidence) * 100)}%
+                          </span>
+                        )}
                         <span style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }} className="tabular-nums">
                           {timeText}
                         </span>

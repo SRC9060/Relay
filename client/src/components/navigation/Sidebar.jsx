@@ -226,26 +226,29 @@ export default function Sidebar({ isOpen, onClose }) {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '7px 10px',
+                      padding: '8px 12px',
                       borderRadius: 'var(--radius-md)',
                       fontSize: '13px',
-                      fontWeight: isActive ? 600 : 400,
+                      fontWeight: isActive ? 600 : 500,
                       color: isActive ? 'var(--color-primary)' : 'var(--color-charcoal)',
                       backgroundColor: isActive ? 'var(--color-sage)' : 'transparent',
-                      textDecoration: 'none'
+                      boxShadow: isActive ? 'inset 3px 0 0 var(--color-primary)' : 'none',
+                      textDecoration: 'none',
+                      transition: 'background-color var(--transition-fast), color var(--transition-fast)'
                     })}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <span
                         style={{
                           width: '18px',
                           display: 'inline-flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          flexShrink: 0
+                          flexShrink: 0,
+                          color: isActive ? 'var(--color-primary)' : 'var(--color-charcoal-light)'
                         }}
                       >
-                        <Icon size={16} strokeWidth={1.75} />
+                        <Icon size={16} strokeWidth={isActive ? 2 : 1.75} />
                       </span>
                       <span>{item.label}</span>
                     </div>
@@ -255,21 +258,23 @@ export default function Sidebar({ isOpen, onClose }) {
                         className="tabular-nums"
                         style={{
                           fontSize: '11px',
-                          fontWeight: 500,
-                          padding: '1px 6px',
+                          fontWeight: 600,
+                          padding: '1px 7px',
                           borderRadius: 'var(--radius-full)',
                           backgroundColor: item.badgeType
                             ? `var(--color-resp-${item.badgeType}-bg)`
                             : item.highlight
-                            ? 'var(--color-danger-bg)'
-                            : 'rgba(41, 43, 41, 0.05)',
+                            ? 'var(--color-resp-client-bg)'
+                            : 'rgba(41, 45, 41, 0.06)',
                           color: item.badgeType
                             ? `var(--color-resp-${item.badgeType})`
                             : item.highlight
-                            ? 'var(--color-danger)'
+                            ? 'var(--color-resp-client)'
                             : 'var(--color-charcoal-muted)',
                           border: item.badgeType
                             ? `1px solid var(--color-resp-${item.badgeType}-border)`
+                            : item.highlight
+                            ? '1px solid var(--color-resp-client-border)'
                             : 'none'
                         }}
                       >
@@ -311,8 +316,8 @@ export default function Sidebar({ isOpen, onClose }) {
           alignItems: 'center'
         }}
       >
-        <span>Warm Swiss Design</span>
-        <span style={{ fontWeight: 500 }} className="tabular-nums">v1.0 (M1)</span>
+        <span>Elena (Assistant)</span>
+        <span style={{ fontWeight: 600, color: 'var(--color-primary)' }} className="tabular-nums">Relay v1.0</span>
       </div>
     </aside>
   );

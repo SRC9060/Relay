@@ -109,6 +109,21 @@ export default function ClientAttentionCard({
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
           <span
             style={{
+              fontSize: '10px',
+              fontWeight: 600,
+              padding: '1px 6px',
+              borderRadius: 'var(--radius-xs)',
+              backgroundColor: 'var(--color-resp-client-bg)',
+              border: '1px solid var(--color-resp-client-border)',
+              color: 'var(--color-resp-client)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.03em'
+            }}
+          >
+            Action Required
+          </span>
+          <span
+            style={{
               fontSize: '10.5px',
               color: 'var(--color-charcoal-light)',
               fontVariantNumeric: 'tabular-nums'

@@ -35,9 +35,11 @@ export default function MessageThreadView({ conversation }) {
         const senderObj = (msg && typeof msg.sender === 'object' && msg.sender !== null) ? msg.sender : { name: typeof msg?.sender === 'string' ? msg.sender : 'Unknown Sender', email: '' };
         const senderName = senderObj.name || 'Unknown Sender';
         const senderEmail = senderObj.email || '';
-        const isAssistantSender =
+        const isElena =
           (senderEmail && senderEmail.includes('relay-assistant')) ||
-          senderName.toLowerCase().includes('elena') ||
+          senderName.toLowerCase().includes('elena');
+        const isMarcus =
+          (senderEmail && (senderEmail.includes('vancetech') || senderEmail.includes('marcus'))) ||
           senderName.toLowerCase().includes('marcus');
 
         const initials = senderName
@@ -48,14 +50,21 @@ export default function MessageThreadView({ conversation }) {
           .slice(0, 2)
           .toUpperCase() || 'CX';
 
+        const cardBg = isElena ? '#F5F8F6' : isMarcus ? '#FAF7F2' : 'var(--color-surface)';
+        const accentBorder = isElena
+          ? '3px solid var(--color-primary)'
+          : isMarcus
+          ? '3px solid var(--color-resp-client)'
+          : 'var(--border-subtle)';
+
         return (
           <div
             key={msg.id || index}
             style={{
-              padding: '16px 18px',
-              backgroundColor: isAssistantSender ? '#FAFAF7' : 'var(--color-surface)',
+              padding: '18px 20px',
+              backgroundColor: cardBg,
               border: 'var(--border-subtle)',
-              borderLeft: isAssistantSender ? '3px solid var(--color-primary)' : 'var(--border-subtle)',
+              borderLeft: accentBorder,
               borderRadius: 'var(--radius-lg)',
               boxShadow: 'var(--shadow-card)',
               display: 'flex',
@@ -65,18 +74,22 @@ export default function MessageThreadView({ conversation }) {
           >
             {/* Message Header: Sender & Timestamp */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div
                   style={{
-                    width: '30px',
-                    height: '30px',
+                    width: '32px',
+                    height: '32px',
                     borderRadius: '50%',
-                    backgroundColor: isAssistantSender ? 'var(--color-primary)' : 'var(--color-sage)',
-                    color: isAssistantSender ? '#FFFFFF' : 'var(--color-primary)',
+                    backgroundColor: isElena
+                      ? 'var(--color-primary)'
+                      : isMarcus
+                      ? 'var(--color-resp-client)'
+                      : 'var(--color-sage)',
+                    color: (isElena || isMarcus) ? '#FFFFFF' : 'var(--color-primary)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '11px',
+                    fontSize: '11.5px',
                     fontWeight: 600,
                     flexShrink: 0
                   }}
@@ -84,8 +97,38 @@ export default function MessageThreadView({ conversation }) {
                   {initials}
                 </div>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-charcoal)' }}>
-                    {senderName}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-charcoal)' }}>
+                      {senderName}
+                    </span>
+                    {isElena && (
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          padding: '1px 5px',
+                          borderRadius: 'var(--radius-xs)',
+                          backgroundColor: 'var(--color-resp-assistant-bg)',
+                          color: 'var(--color-primary)'
+                        }}
+                      >
+                        Assistant
+                      </span>
+                    )}
+                    {isMarcus && (
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          padding: '1px 5px',
+                          borderRadius: 'var(--radius-xs)',
+                          backgroundColor: 'var(--color-resp-client-bg)',
+                          color: 'var(--color-resp-client)'
+                        }}
+                      >
+                        Client
+                      </span>
+                    )}
                   </div>
                   {senderEmail && (
                     <div style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }}>
@@ -100,6 +143,7 @@ export default function MessageThreadView({ conversation }) {
                 style={{
                   fontSize: '11px',
                   color: 'var(--color-charcoal-light)',
+                  fontWeight: 500,
                   flexShrink: 0
                 }}
               >
@@ -110,12 +154,12 @@ export default function MessageThreadView({ conversation }) {
             {/* Message Body */}
             <div
               style={{
-                fontSize: '13px',
+                fontSize: '13.5px',
                 color: 'var(--color-charcoal)',
-                lineHeight: 1.6,
+                lineHeight: 1.65,
                 whiteSpace: 'pre-line',
                 wordBreak: 'break-word',
-                paddingLeft: '39px'
+                paddingLeft: '42px'
               }}
             >
               {msg.body}

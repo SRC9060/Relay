@@ -21,6 +21,10 @@ export default function ConversationListItem({
     draft
   } = conversation;
 
+  const rawConfidence = conversation.confidenceScore ?? conversation.aiConfidence;
+  const hasConfidence = rawConfidence !== null && rawConfidence !== undefined && Number.isFinite(Number(rawConfidence));
+  const confidencePercent = hasConfidence ? Math.round(Number(rawConfidence) * 100) : null;
+
   // Format relative timestamp
   const formatTime = (iso) => {
     if (!iso) return '';
@@ -42,10 +46,17 @@ export default function ConversationListItem({
       onClick={() => onSelect(id)}
       className={`conversation-list-row ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}`}
       style={{
-        padding: '13px 16px',
+        padding: '14px 18px',
         borderBottom: 'var(--border-subtle)',
+        backgroundColor: isSelected
+          ? 'var(--color-sage)'
+          : isUnread
+          ? '#FDFCFA'
+          : 'var(--color-surface)',
+        boxShadow: isSelected ? 'inset 3px 0 0 var(--color-primary)' : 'none',
         cursor: 'pointer',
-        position: 'relative'
+        position: 'relative',
+        transition: 'background-color var(--transition-fast)'
       }}
     >
       {/* Top Row: Sender, Unread Dot, Timestamp, Star */}
@@ -161,22 +172,40 @@ export default function ConversationListItem({
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
         <Badge type={responsibility} size="sm" dot />
 
-        {actionStatus === 'action_required' && (
+        {confidencePercent !== null && (
           <span
+            className="tabular-nums"
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-              fontSize: '10px',
-              fontWeight: 500,
+              fontSize: '10.5px',
+              fontWeight: 600,
               padding: '1px 6px',
               borderRadius: 'var(--radius-xs)',
               backgroundColor: 'var(--color-surface-subtle)',
               border: 'var(--border-subtle)',
               color: 'var(--color-charcoal-muted)'
             }}
+            title={`AI Classification Confidence: ${confidencePercent}%`}
           >
-            <AlertCircle size={10} color="var(--color-danger)" />
+            {confidencePercent}%
+          </span>
+        )}
+
+        {actionStatus === 'action_required' && (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '10.5px',
+              fontWeight: 500,
+              padding: '2px 7px',
+              borderRadius: 'var(--radius-xs)',
+              backgroundColor: 'var(--color-resp-client-bg)',
+              border: '1px solid var(--color-resp-client-border)',
+              color: 'var(--color-resp-client)'
+            }}
+          >
+            <AlertCircle size={10} color="var(--color-resp-client)" />
             Action required
           </span>
         )}
@@ -187,9 +216,9 @@ export default function ConversationListItem({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '4px',
-              fontSize: '10px',
+              fontSize: '10.5px',
               fontWeight: 500,
-              padding: '1px 6px',
+              padding: '2px 7px',
               borderRadius: 'var(--radius-xs)',
               backgroundColor: 'var(--color-surface-subtle)',
               border: 'var(--border-subtle)',
@@ -207,9 +236,9 @@ export default function ConversationListItem({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '4px',
-              fontSize: '10px',
+              fontSize: '10.5px',
               fontWeight: 500,
-              padding: '1px 6px',
+              padding: '2px 7px',
               borderRadius: 'var(--radius-xs)',
               backgroundColor: 'var(--color-success-bg)',
               border: '1px solid rgba(42, 110, 78, 0.2)',
@@ -227,9 +256,9 @@ export default function ConversationListItem({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '4px',
-              fontSize: '10px',
+              fontSize: '10.5px',
               fontWeight: 500,
-              padding: '1px 6px',
+              padding: '2px 7px',
               borderRadius: 'var(--radius-xs)',
               backgroundColor: 'var(--color-primary-muted)',
               border: '1px solid var(--color-primary-muted)',

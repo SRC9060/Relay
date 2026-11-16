@@ -467,11 +467,12 @@ export default function ClientConversationView({
                 {/* Body */}
                 <div
                   style={{
-                    fontSize: '13px',
-                    lineHeight: 1.6,
+                    fontSize: '13.5px',
+                    lineHeight: 1.65,
                     color: 'var(--color-charcoal)',
                     whiteSpace: 'pre-line',
-                    paddingTop: '4px'
+                    paddingTop: '4px',
+                    wordBreak: 'break-word'
                   }}
                 >
                   {msg.body}

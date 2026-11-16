@@ -105,38 +105,45 @@ export default function ConversationActionBar({ conversation, onNavigate }) {
         <div style={{ width: '1px', height: '18px', backgroundColor: 'rgba(41, 43, 41, 0.1)', margin: '0 4px' }} />
 
         {/* Manual Responsibility Selector */}
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <select
-            value={responsibility}
-            onChange={(e) => changeResponsibility(id, e.target.value)}
-            style={{
-              appearance: 'none',
-              padding: '5px 24px 5px 8px',
-              fontSize: '11px',
-              fontWeight: 500,
-              borderRadius: 'var(--radius-sm)',
-              backgroundColor: `var(--color-resp-${responsibility}-bg)`,
-              border: `1px solid var(--color-resp-${responsibility}-border)`,
-              color: `var(--color-resp-${responsibility})`,
-              cursor: 'pointer',
-              outline: 'none'
-            }}
-            title="Change reply responsibility manually"
-          >
-            <option value="assistant">Assistant to Reply</option>
-            <option value="client">Client to Reply</option>
-            <option value="none">No Reply Needed</option>
-            <option value="review">Needs Review</option>
-          </select>
-          <ChevronDown
-            size={12}
-            style={{
-              position: 'absolute',
-              right: '7px',
-              pointerEvents: 'none',
-              color: `var(--color-resp-${responsibility})`
-            }}
-          />
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--color-charcoal-muted)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+            <ShieldAlert size={12} color="var(--color-primary)" />
+            Triage:
+          </span>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <select
+              value={responsibility}
+              onChange={(e) => changeResponsibility(id, e.target.value)}
+              style={{
+                appearance: 'none',
+                padding: '5px 26px 5px 9px',
+                fontSize: '11px',
+                fontWeight: 600,
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: `var(--color-resp-${responsibility}-bg)`,
+                border: `1px solid var(--color-resp-${responsibility}-border)`,
+                color: `var(--color-resp-${responsibility})`,
+                cursor: 'pointer',
+                outline: 'none',
+                transition: 'box-shadow var(--transition-fast)'
+              }}
+              title="Change reply responsibility manually (Human Override)"
+            >
+              <option value="assistant">Assistant to Reply</option>
+              <option value="client">Client to Reply</option>
+              <option value="none">No Reply Needed</option>
+              <option value="review">Needs Review</option>
+            </select>
+            <ChevronDown
+              size={12}
+              style={{
+                position: 'absolute',
+                right: '7px',
+                pointerEvents: 'none',
+                color: `var(--color-resp-${responsibility})`
+              }}
+            />
+          </div>
         </div>
       </div>
 
