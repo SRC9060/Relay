@@ -5,6 +5,11 @@ import { useAccounts } from './AccountContext';
 
 const ConversationContext = createContext(null);
 
+// Notify both workspaces when a persisted conversation changes.
+const notifyConversationChange = () => {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('relay:conversations-changed'));
+};
+
 export function ConversationProvider({ children }) {
   const { selectedAccountId } = useAccounts();
 
@@ -126,6 +131,21 @@ export function ConversationProvider({ children }) {
     fetchConversations(true);
   }, [activeSegment, selectedAccountId, searchQuery, subFilter]);
 
+  // Keep the Assistant workspace in sync with actions performed in the Client portal (and vice versa).
+  useEffect(() => {
+    const handleConversationChange = () => {
+      fetchConversations(true);
+      api.getCounts(selectedAccountId).then((nextCounts) => {
+        if (nextCounts) {
+          setCounts(nextCounts);
+          setCountsLoaded(true);
+        }
+      }).catch((error) => console.error('[Relay] Failed to refresh counts:', error));
+    };
+    window.addEventListener('relay:conversations-changed', handleConversationChange);
+    return () => window.removeEventListener('relay:conversations-changed', handleConversationChange);
+  }, [fetchConversations, selectedAccountId]);
+
   // Also fetch counts on mount
   useEffect(() => {
     api.getCounts(selectedAccountId).then((c) => {
@@ -159,6 +179,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.updateConversation(id, { isUnread: newIsUnread });
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
     } catch (err) {
       console.error('Failed to update read status:', err);
@@ -227,6 +248,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.updateConversation(id, { isImportant: newIsImportant });
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast(newIsImportant ? 'Marked as important' : 'Removed from important');
     } catch (err) {
@@ -251,6 +273,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.updateConversation(id, { isArchived: true });
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast('Conversation archived');
     } catch (err) {
@@ -263,6 +286,7 @@ export function ConversationProvider({ children }) {
     setConversations((prev) => prev.filter((c) => c.id !== id));
     try {
       const res = await api.restoreConversation(id);
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast('Conversation restored to inbox');
     } catch (err) {
@@ -281,6 +305,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.markCompleted(id);
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast('Conversation marked completed');
     } catch (err) {
@@ -308,6 +333,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.markHandled(id);
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast('Marked as handled. Completed in client attention queue.');
       return res;
@@ -345,6 +371,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.delegateToAssistant(id, notes);
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast('Delegated to assistant Elena Rostova with priority.');
       return res;
@@ -381,6 +408,7 @@ export function ConversationProvider({ children }) {
 
     try {
       const res = await api.updateResponsibility(id, newResp);
+      notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
       showToast(`Responsibility updated: ${newResp}`);
     } catch (err) {
@@ -392,6 +420,7 @@ export function ConversationProvider({ children }) {
   const saveDraft = useCallback(async (id, body) => {
     try {
       const updated = await api.saveDraft(id, { body });
+      if (updated) notifyConversationChange();
       if (updated) {
         setConversations((prev) =>
           prev.map((c) => (c.id === id ? { ...c, draft: updated.draft } : c))
@@ -410,6 +439,7 @@ export function ConversationProvider({ children }) {
   const sendDraft = useCallback(async (id) => {
     try {
       const res = await api.sendDraft(id);
+      if (res?.data) notifyConversationChange();
       if (res && res.data) {
         setConversations((prev) =>
           prev.map((c) => (c.id === id ? res.data : c))
@@ -455,6 +485,7 @@ export function ConversationProvider({ children }) {
   const classifyConversation = useCallback(async (id) => {
     try {
       const res = await api.classifyConversation(id);
+      if (res?.data) notifyConversationChange();
       if (res && res.data) {
         setConversations((prev) => prev.map((c) => (c.id === id ? res.data : c)));
         if (selectedConversation && selectedConversation.id === id) {
@@ -473,6 +504,7 @@ export function ConversationProvider({ children }) {
   const simulateIncomingMessage = useCallback(async (id, customMsg) => {
     try {
       const res = await api.simulateIncomingMessage(id, customMsg);
+      if (res?.data) notifyConversationChange();
       if (res && res.data) {
         setConversations((prev) => prev.map((c) => (c.id === id ? res.data : c)));
         if (selectedConversation && selectedConversation.id === id) {
@@ -491,6 +523,7 @@ export function ConversationProvider({ children }) {
   const acceptSuggestion = useCallback(async (id) => {
     try {
       const res = await api.acceptSuggestion(id);
+      if (res?.data) notifyConversationChange();
       if (res && res.data) {
         setConversations((prev) => prev.map((c) => (c.id === id ? res.data : c)));
         if (selectedConversation && selectedConversation.id === id) {
@@ -508,6 +541,7 @@ export function ConversationProvider({ children }) {
   const dismissSuggestion = useCallback(async (id) => {
     try {
       const res = await api.dismissSuggestion(id);
+      if (res?.data) notifyConversationChange();
       if (res && res.data) {
         setConversations((prev) => prev.map((c) => (c.id === id ? res.data : c)));
         if (selectedConversation && selectedConversation.id === id) {
