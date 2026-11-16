@@ -58,6 +58,7 @@ export function ConversationProvider({ children }) {
     archive: 1
   });
   const [loading, setLoading] = useState(true);
+  const [countsLoaded, setCountsLoaded] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   const showToast = useCallback((msg) => {
@@ -81,6 +82,7 @@ export function ConversationProvider({ children }) {
         setConversations(res.data);
         if (res.counts) {
           setCounts(res.counts);
+          setCountsLoaded(true);
         }
 
         // Selection maintenance: prioritize URL id if present, followed by active selection
@@ -127,7 +129,10 @@ export function ConversationProvider({ children }) {
   // Also fetch counts on mount
   useEffect(() => {
     api.getCounts(selectedAccountId).then((c) => {
-      if (c) setCounts(c);
+      if (c) {
+        setCounts(c);
+        setCountsLoaded(true);
+      }
     }).catch(() => {});
   }, [selectedAccountId]);
 
@@ -529,6 +534,7 @@ export function ConversationProvider({ children }) {
         subFilter,
         setSubFilter,
         counts,
+        countsLoaded,
         loading,
         toastMessage,
         aiStatus,
