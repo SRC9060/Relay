@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { getDbStatus } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import accountsRoutes from './routes/accounts.routes.js';
 import conversationsRoutes from './routes/conversations.routes.js';
@@ -9,13 +10,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API health check
+// API health check with database status (safe, credential-free)
 app.get('/api/health', (req, res) => {
+  const dbState = getDbStatus();
   res.json({
     status: 'ok',
     service: 'Relay Backend API',
     version: '1.0.0',
     milestone: 3,
+    database: {
+      status: dbState.status,
+      readyState: dbState.readyState,
+      host: dbState.host,
+      name: dbState.name
+    },
     timestamp: new Date().toISOString()
   });
 });

@@ -1,21 +1,27 @@
-import { seedUsers, seedAccounts, seedConversations } from '../data/seedData.js';
+import mongoose from 'mongoose';
+import { User } from '../models/User.model.js';
+import { Account } from '../models/Account.model.js';
+import { Conversation } from '../models/Conversation.model.js';
 import { classificationService } from './classification.service.js';
+import { seedUsers, seedAccounts, seedConversations } from '../data/seedData.js';
 
 /**
- * StorageService
- * Provides in-memory persistence with fallback capabilities.
+ * StorageService for Relay
+ * Backed by MongoDB Atlas via Mongoose models.
  * Manages conversation lifecycle, manual overrides, AI classifications,
- * incoming message simulation, and live counts.
+ * incoming message simulation, and live synchronized counts.
  */
 class StorageService {
   constructor() {
-    this.users = [...seedUsers];
-    this.accounts = [...seedAccounts];
-    this.conversations = JSON.parse(JSON.stringify(seedConversations));
-    this.syncHistory = [];
+    // In-memory fallback dataset for isolated/offline testing if MongoDB is unavailable
+    this._memUsers = [...seedUsers];
+    this._memAccounts = [...seedAccounts];
+    this._memConversations = JSON.parse(JSON.stringify(seedConversations));
+    this._initMemConversations();
+  }
 
-    // Ensure all seed conversations have baseline AI and override attributes
-    this.conversations.forEach((c) => {
+  _initMemConversations() {
+    this._memConversations.forEach((c) => {
       if (c.needsReview === undefined) {
         c.needsReview = c.responsibility === 'review' || (c.confidenceScore && c.confidenceScore < 0.75);
       }
@@ -34,24 +40,44 @@ class StorageService {
     });
   }
 
-  // Users
-  getUsers() {
-    return this.users;
+  isDbReady() {
+    return mongoose.connection.readyState === 1;
   }
 
-  getUserById(id) {
-    return this.users.find((u) => u.id === id) || null;
+  // ============================================================================
+  // USERS
+  // ============================================================================
+
+  async getUsers() {
+    if (this.isDbReady()) {
+      return await User.find().lean();
+    }
+    return this._memUsers;
   }
 
-  getUserByEmail(email) {
-    return this.users.find((u) => u.email.toLowerCase() === email.toLowerCase()) || null;
+  async getUserById(id) {
+    if (this.isDbReady()) {
+      return await User.findOne({ id }).lean();
+    }
+    return this._memUsers.find((u) => u.id === id) || null;
   }
 
-  createUser(userData) {
+  async getUserByEmail(email) {
+    if (!email) return null;
+    const clean = email.toLowerCase().trim();
+    if (this.isDbReady()) {
+      return await User.findOne({ email: clean }).lean();
+    }
+    return this._memUsers.find((u) => u.email.toLowerCase() === clean) || null;
+  }
+
+  async createUser(userData) {
+    const id = `user_${Date.now()}`;
+    const cleanEmail = userData.email.toLowerCase().trim();
     const newUser = {
-      id: `user_${Date.now()}`,
+      id,
       name: userData.name,
-      email: userData.email,
+      email: cleanEmail,
       role: userData.role || 'assistant',
       title: userData.title || (userData.role === 'client' ? 'Client' : 'Executive Assistant'),
       avatar: (userData.name || 'User')
@@ -61,23 +87,61 @@ class StorageService {
         .slice(0, 2)
         .toUpperCase()
     };
-    this.users.push(newUser);
+
+    if (this.isDbReady()) {
+      const created = await User.create(newUser);
+      return created.toObject ? created.toObject() : created;
+    }
+
+    this._memUsers.push(newUser);
     return newUser;
   }
 
-  // Accounts
-  getAccounts() {
-    return this.accounts;
+  // ============================================================================
+  // ACCOUNTS
+  // ============================================================================
+
+  async getAccounts() {
+    if (this.isDbReady()) {
+      return await Account.find().lean();
+    }
+    return this._memAccounts;
   }
 
-  getAccountById(id) {
-    return this.accounts.find((a) => a.id === id) || null;
+  async getAccountById(id) {
+    if (this.isDbReady()) {
+      return await Account.findOne({ id }).lean();
+    }
+    return this._memAccounts.find((a) => a.id === id) || null;
   }
 
-  connectAccount({ provider, emailAddress, name }) {
-    const existing = this.accounts.find(
-      (a) => a.emailAddress.toLowerCase() === emailAddress.toLowerCase()
-    );
+  async connectAccount({ provider, emailAddress, name }) {
+    const cleanEmail = emailAddress.toLowerCase().trim();
+
+    if (this.isDbReady()) {
+      const existing = await Account.findOne({ emailAddress: cleanEmail });
+      if (existing) {
+        existing.connectionStatus = 'connected';
+        existing.lastSyncedAt = new Date().toISOString();
+        await existing.save();
+        return existing.toObject ? existing.toObject() : existing;
+      }
+
+      const newAccount = await Account.create({
+        id: `acc_${provider}_${Date.now()}`,
+        provider,
+        name: name || (provider === 'gmail' ? 'Google Workspace' : 'Microsoft 365'),
+        emailAddress: cleanEmail,
+        connectionStatus: 'connected',
+        isSimulated: true,
+        lastSyncedAt: new Date().toISOString(),
+        totalEmails: 12,
+        actionRequiredCount: 3
+      });
+      return newAccount.toObject ? newAccount.toObject() : newAccount;
+    }
+
+    const existing = this._memAccounts.find((a) => a.emailAddress.toLowerCase() === cleanEmail);
     if (existing) {
       existing.connectionStatus = 'connected';
       existing.lastSyncedAt = new Date().toISOString();
@@ -88,38 +152,139 @@ class StorageService {
       id: `acc_${provider}_${Date.now()}`,
       provider,
       name: name || (provider === 'gmail' ? 'Google Workspace' : 'Microsoft 365'),
-      emailAddress,
+      emailAddress: cleanEmail,
       connectionStatus: 'connected',
       isSimulated: true,
       lastSyncedAt: new Date().toISOString(),
       totalEmails: 12,
       actionRequiredCount: 3
     };
-
-    this.accounts.push(newAccount);
+    this._memAccounts.push(newAccount);
     return newAccount;
   }
 
-  updateAccountSync(id) {
-    const account = this.getAccountById(id);
+  async updateAccountSync(id) {
+    if (this.isDbReady()) {
+      return await Account.findOneAndUpdate(
+        { id },
+        { $set: { lastSyncedAt: new Date().toISOString() } },
+        { new: true }
+      ).lean();
+    }
+
+    const account = this._memAccounts.find((a) => a.id === id);
     if (!account) return null;
     account.lastSyncedAt = new Date().toISOString();
     return account;
   }
 
-  disconnectAccount(id) {
-    const index = this.accounts.findIndex((a) => a.id === id);
+  async disconnectAccount(id) {
+    if (this.isDbReady()) {
+      const result = await Account.deleteOne({ id });
+      return result.deletedCount > 0;
+    }
+
+    const index = this._memAccounts.findIndex((a) => a.id === id);
     if (index === -1) return false;
-    this.accounts.splice(index, 1);
+    this._memAccounts.splice(index, 1);
     return true;
   }
 
-  // Conversations
-  getConversations({ segment = 'all', accountId, q, filter } = {}) {
-    let list = [...this.conversations];
+  // ============================================================================
+  // CONVERSATIONS
+  // ============================================================================
 
-    // Segment filter
-    const seg = segment.toLowerCase();
+  async getConversations({ segment = 'all', accountId, q, filter } = {}) {
+    if (this.isDbReady()) {
+      const query = {};
+      const seg = (segment || 'all').toLowerCase();
+
+      // Segment filter
+      if (seg === 'all') {
+        query.isArchived = { $ne: true };
+      } else if (seg === 'action-required' || seg === 'action_required') {
+        query.isArchived = { $ne: true };
+        query.actionStatus = 'action_required';
+      } else if (seg === 'assistant-reply' || seg === 'assistant_reply') {
+        query.isArchived = { $ne: true };
+        query.responsibility = 'assistant';
+      } else if (seg === 'client-reply' || seg === 'client_reply') {
+        query.isArchived = { $ne: true };
+        query.responsibility = 'client';
+      } else if (seg === 'client-queue' || seg === 'client_queue') {
+        query.isArchived = { $ne: true };
+        query.responsibility = 'client';
+        query.actionStatus = { $nin: ['completed', 'resolved'] };
+      } else if (seg === 'no-reply' || seg === 'no_reply') {
+        query.isArchived = { $ne: true };
+        query.responsibility = 'none';
+      } else if (seg === 'review' || seg === 'needs-review' || seg === 'needs_review') {
+        query.isArchived = { $ne: true };
+        query.$or = [{ needsReview: true }, { responsibility: 'review' }];
+      } else if (seg === 'waiting') {
+        query.isArchived = { $ne: true };
+        query.actionStatus = 'waiting';
+      } else if (seg === 'meetings') {
+        query.isArchived = { $ne: true };
+        query.category = { $in: ['meetings', 'scheduling'] };
+      } else if (seg === 'important') {
+        query.isArchived = { $ne: true };
+        query.isImportant = true;
+      } else if (seg === 'archive' || seg === 'archived') {
+        query.isArchived = true;
+      }
+
+      // Account filter
+      if (accountId && accountId !== 'all') {
+        query.accountId = accountId;
+      }
+
+      // Secondary quick filter
+      if (filter === 'unread') {
+        query.isUnread = true;
+      } else if (filter === 'important') {
+        query.isImportant = true;
+      } else if (filter === 'has_draft') {
+        query['draft.body'] = { $exists: true, $ne: '' };
+      } else if (filter === 'needs_review') {
+        const reviewCond = [{ needsReview: true }, { responsibility: 'review' }];
+        if (query.$or) {
+          query.$and = [{ $or: query.$or }, { $or: reviewCond }];
+          delete query.$or;
+        } else {
+          query.$or = reviewCond;
+        }
+      }
+
+      // Search query across subject, preview, sender, messages
+      if (q && q.trim()) {
+        const regex = new RegExp(q.trim(), 'i');
+        const searchConditions = [
+          { subject: regex },
+          { preview: regex },
+          { 'sender.name': regex },
+          { 'sender.email': regex },
+          { 'messages.body': regex }
+        ];
+
+        if (query.$and) {
+          query.$and.push({ $or: searchConditions });
+        } else if (query.$or) {
+          query.$and = [{ $or: query.$or }, { $or: searchConditions }];
+          delete query.$or;
+        } else {
+          query.$or = searchConditions;
+        }
+      }
+
+      const list = await Conversation.find(query).sort({ lastMessageAt: -1 }).lean();
+      return list;
+    }
+
+    // In-Memory Fallback
+    let list = [...this._memConversations];
+    const seg = (segment || 'all').toLowerCase();
+
     if (seg === 'all') {
       list = list.filter((c) => !c.isArchived);
     } else if (seg === 'action-required' || seg === 'action_required') {
@@ -144,12 +309,10 @@ class StorageService {
       list = list.filter((c) => c.isArchived);
     }
 
-    // Account filter
     if (accountId && accountId !== 'all') {
       list = list.filter((c) => c.accountId === accountId);
     }
 
-    // Quick filter
     if (filter === 'unread') {
       list = list.filter((c) => c.isUnread);
     } else if (filter === 'important') {
@@ -160,7 +323,6 @@ class StorageService {
       list = list.filter((c) => c.needsReview || c.responsibility === 'review');
     }
 
-    // Search query
     if (q && q.trim()) {
       const term = q.trim().toLowerCase();
       list = list.filter((c) => {
@@ -173,30 +335,42 @@ class StorageService {
       });
     }
 
-    // Sort by lastMessageAt descending
     list.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
-
     return list;
   }
 
-  getConversationById(id) {
-    return this.conversations.find((c) => c.id === id) || null;
+  async getConversationById(id) {
+    if (this.isDbReady()) {
+      return await Conversation.findOne({ id }).lean();
+    }
+    return this._memConversations.find((c) => c.id === id) || null;
   }
 
-  updateConversation(id, updates = {}) {
-    const conv = this.getConversationById(id);
-    if (!conv) return null;
+  async updateConversation(id, updates = {}) {
+    const allowed = ['isRead', 'isUnread', 'isImportant', 'isArchived', 'actionStatus', 'category', 'needsReview', 'aiSummary', 'summaryDetails'];
+    const updateFields = {};
 
-    const allowed = ['isRead', 'isUnread', 'isImportant', 'isArchived', 'actionStatus', 'category', 'needsReview'];
     for (const key of allowed) {
       if (updates[key] !== undefined) {
         if (key === 'isRead') {
-          conv.isUnread = !updates.isRead;
+          updateFields.isUnread = !updates.isRead;
         } else {
-          conv[key] = updates[key];
+          updateFields[key] = updates[key];
         }
       }
     }
+
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: updateFields },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
+    if (!conv) return null;
+    Object.assign(conv, updateFields);
     return conv;
   }
 
@@ -205,35 +379,73 @@ class StorageService {
    * Sets manual human decision, flags isManualOverride=true, clears review state,
    * and clears any pending AI suggestion.
    */
-  updateResponsibility(id, responsibility, reasoning) {
-    const conv = this.getConversationById(id);
-    if (!conv) return null;
+  async updateResponsibility(id, responsibility, reasoning) {
+    const updateFields = {
+      responsibility,
+      isManualOverride: true,
+      manualOverrideAt: new Date().toISOString(),
+      manualDecision: responsibility,
+      needsReview: false,
+      confidenceScore: 1.0,
+      pendingSuggestion: null,
+      aiReasoning: reasoning || `Human override: Manually assigned to ${responsibility} by executive assistant.`
+    };
 
-    conv.responsibility = responsibility;
-    conv.isManualOverride = true;
-    conv.manualOverrideAt = new Date().toISOString();
-    conv.manualDecision = responsibility;
-    conv.needsReview = false; // Manual decision resolves review state
-    conv.confidenceScore = 1.0;
-    conv.pendingSuggestion = null;
-
-    if (reasoning) {
-      conv.aiReasoning = reasoning;
-    } else {
-      conv.aiReasoning = `Human override: Manually assigned to ${responsibility} by executive assistant.`;
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: updateFields },
+        { new: true }
+      ).lean();
     }
 
+    const conv = this._memConversations.find((c) => c.id === id);
+    if (!conv) return null;
+    Object.assign(conv, updateFields);
     return conv;
   }
 
   /**
    * Applies an AI classification result to a conversation, strictly respecting human overrides
    */
-  applyClassification(id, classification) {
-    const conv = this.getConversationById(id);
+  async applyClassification(id, classification) {
+    if (this.isDbReady()) {
+      const conv = await Conversation.findOne({ id });
+      if (!conv) return null;
+
+      conv.aiSummary = classification.summary;
+      conv.importantInformation = classification.importantInformation || [];
+      conv.identifiedDates = classification.identifiedDates || [];
+      conv.aiSource = classification.aiSource;
+      conv.modelUsed = classification.modelUsed;
+
+      if (conv.isManualOverride) {
+        if (classification.responsibility !== conv.responsibility) {
+          conv.suggestedResponsibility = classification.responsibility;
+          conv.pendingSuggestion = {
+            responsibility: classification.responsibility,
+            confidenceScore: classification.confidenceScore,
+            explanation: classification.explanation,
+            reason: `New information suggests ${classification.responsibility}. Manual override (${conv.responsibility}) currently active.`
+          };
+        } else {
+          conv.pendingSuggestion = null;
+        }
+      } else {
+        conv.responsibility = classification.responsibility;
+        conv.confidenceScore = classification.confidenceScore;
+        conv.needsReview = Boolean(classification.needsReview || classification.confidenceScore < 0.75);
+        conv.aiReasoning = classification.explanation;
+        conv.pendingSuggestion = null;
+      }
+
+      await conv.save();
+      return conv.toObject ? conv.toObject() : conv;
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return null;
 
-    // Preserve non-responsibility AI extracted values
     conv.aiSummary = classification.summary;
     conv.importantInformation = classification.importantInformation || [];
     conv.identifiedDates = classification.identifiedDates || [];
@@ -241,7 +453,6 @@ class StorageService {
     conv.modelUsed = classification.modelUsed;
 
     if (conv.isManualOverride) {
-      // Human decision is protected: do not overwrite current responsibility
       if (classification.responsibility !== conv.responsibility) {
         conv.suggestedResponsibility = classification.responsibility;
         conv.pendingSuggestion = {
@@ -254,7 +465,6 @@ class StorageService {
         conv.pendingSuggestion = null;
       }
     } else {
-      // Normal AI classification update
       conv.responsibility = classification.responsibility;
       conv.confidenceScore = classification.confidenceScore;
       conv.needsReview = Boolean(classification.needsReview || classification.confidenceScore < 0.75);
@@ -268,8 +478,24 @@ class StorageService {
   /**
    * Accept an AI suggested change after an override
    */
-  acceptSuggestion(id) {
-    const conv = this.getConversationById(id);
+  async acceptSuggestion(id) {
+    if (this.isDbReady()) {
+      const conv = await Conversation.findOne({ id });
+      if (!conv || !conv.pendingSuggestion) return conv ? (conv.toObject ? conv.toObject() : conv) : null;
+
+      conv.responsibility = conv.pendingSuggestion.responsibility;
+      conv.confidenceScore = conv.pendingSuggestion.confidenceScore;
+      conv.aiReasoning = conv.pendingSuggestion.explanation;
+      conv.isManualOverride = false;
+      conv.manualDecision = null;
+      conv.pendingSuggestion = null;
+      conv.needsReview = Boolean(conv.confidenceScore < 0.75);
+
+      await conv.save();
+      return conv.toObject ? conv.toObject() : conv;
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv || !conv.pendingSuggestion) return conv;
 
     conv.responsibility = conv.pendingSuggestion.responsibility;
@@ -286,8 +512,16 @@ class StorageService {
   /**
    * Dismiss an AI suggested change, keeping the human override
    */
-  dismissSuggestion(id) {
-    const conv = this.getConversationById(id);
+  async dismissSuggestion(id) {
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: { pendingSuggestion: null } },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return conv;
     conv.pendingSuggestion = null;
     return conv;
@@ -299,7 +533,7 @@ class StorageService {
    * and preserves manual overrides.
    */
   async simulateIncomingMessage(id, customMessage = {}) {
-    const conv = this.getConversationById(id);
+    const conv = await this.getConversationById(id);
     if (!conv) return null;
 
     const senderName = conv.sender?.name || 'Counterparty';
@@ -308,7 +542,6 @@ class StorageService {
     let defaultBody = '';
     let isUrgent = false;
 
-    // Contextual demo message generation
     if (conv.responsibility === 'assistant') {
       defaultBody = `Hi Elena,\n\nFollowing up on our earlier note: we have now received authorization for the booking. Could Mr. Vance personally confirm whether he requires formal execution sign-off on the Master Services Annex before departure?`;
       isUrgent = true;
@@ -329,15 +562,34 @@ class StorageService {
       body: customMessage.body || defaultBody
     };
 
+    if (this.isDbReady()) {
+      const dbConv = await Conversation.findOne({ id });
+      if (!dbConv) return null;
+      dbConv.messages.push(newMsg);
+      dbConv.lastMessageAt = newMsg.timestamp;
+      dbConv.isUnread = true;
+      if (isUrgent) dbConv.actionStatus = 'action_required';
+      await dbConv.save();
+
+      // Re-evaluate with AI classification service
+      try {
+        const newClassification = await classificationService.classifyConversation(dbConv.toObject ? dbConv.toObject() : dbConv);
+        await this.applyClassification(id, newClassification);
+      } catch (e) {
+        console.error('[Relay] AI re-classification failed during incoming message simulation:', e);
+      }
+
+      return await Conversation.findOne({ id }).lean();
+    }
+
     conv.messages.push(newMsg);
     conv.lastMessageAt = newMsg.timestamp;
     conv.isUnread = true;
     if (isUrgent) conv.actionStatus = 'action_required';
 
-    // Re-evaluate with AI classification service
     try {
       const newClassification = await classificationService.classifyConversation(conv);
-      this.applyClassification(id, newClassification);
+      await this.applyClassification(id, newClassification);
     } catch (e) {
       console.error('[Relay] AI re-classification failed during incoming message simulation:', e);
     }
@@ -345,19 +597,52 @@ class StorageService {
     return conv;
   }
 
-  saveDraft(id, draft) {
-    const conv = this.getConversationById(id);
-    if (!conv) return null;
-
-    conv.draft = {
+  async saveDraft(id, draft) {
+    const draftData = {
       body: draft.body || '',
       updatedAt: new Date().toISOString()
     };
+
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: { draft: draftData } },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
+    if (!conv) return null;
+    conv.draft = draftData;
     return conv;
   }
 
-  sendDraft(id) {
-    const conv = this.getConversationById(id);
+  async sendDraft(id) {
+    if (this.isDbReady()) {
+      const conv = await Conversation.findOne({ id });
+      if (!conv) return null;
+
+      if (conv.draft && conv.draft.body) {
+        const newMsg = {
+          id: `msg_reply_${Date.now()}`,
+          sender: {
+            name: 'Elena Rostova (on behalf of Marcus Vance)',
+            email: 'elena.rostova@relay-assistant.io'
+          },
+          timestamp: new Date().toISOString(),
+          body: conv.draft.body
+        };
+        conv.messages.push(newMsg);
+        conv.lastMessageAt = newMsg.timestamp;
+        conv.draft = null;
+        conv.actionStatus = 'waiting';
+        conv.isUnread = false;
+        await conv.save();
+      }
+      return conv.toObject ? conv.toObject() : conv;
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return null;
 
     if (conv.draft && conv.draft.body) {
@@ -373,21 +658,37 @@ class StorageService {
       conv.messages.push(newMsg);
       conv.lastMessageAt = newMsg.timestamp;
       conv.draft = null;
-      conv.actionStatus = 'waiting'; // Waiting for counterparty response
+      conv.actionStatus = 'waiting';
       conv.isUnread = false;
     }
     return conv;
   }
 
-  restoreConversation(id) {
-    const conv = this.getConversationById(id);
+  async restoreConversation(id) {
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: { isArchived: false } },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return null;
     conv.isArchived = false;
     return conv;
   }
 
-  markCompleted(id) {
-    const conv = this.getConversationById(id);
+  async markCompleted(id) {
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: { actionStatus: 'completed' } },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return null;
     conv.actionStatus = 'completed';
     return conv;
@@ -395,43 +696,85 @@ class StorageService {
 
   /**
    * Client Action: Mark as Handled
-   * Marks conversation completed, preserves responsibility, removes from client queue,
-   * and updates assistant workspace.
    */
-  markHandled(id) {
-    const conv = this.getConversationById(id);
+  async markHandled(id) {
+    const updateFields = {
+      actionStatus: 'completed',
+      handledAt: new Date().toISOString(),
+      handledBy: 'client',
+      pendingSuggestion: null
+    };
+
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: updateFields },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return null;
-    conv.actionStatus = 'completed';
-    conv.handledAt = new Date().toISOString();
-    conv.handledBy = 'client';
-    conv.pendingSuggestion = null;
+    Object.assign(conv, updateFields);
     return conv;
   }
 
   /**
    * Client Action: Ask Assistant to Take Over
-   * Reassigns responsibility to assistant, records human override by client,
-   * marks actionStatus as action_required, and removes from client attention queue.
    */
-  delegateToAssistant(id, notes) {
-    const conv = this.getConversationById(id);
+  async delegateToAssistant(id, notes) {
+    const updateFields = {
+      responsibility: 'assistant',
+      isManualOverride: true,
+      delegatedBy: 'client',
+      actionStatus: 'action_required',
+      delegatedAt: new Date().toISOString(),
+      confidenceScore: 1.0,
+      pendingSuggestion: null,
+      needsReview: false,
+      aiReasoning: notes || 'Delegated to executive assistant Elena Rostova by client Marcus Vance.'
+    };
+
+    if (this.isDbReady()) {
+      return await Conversation.findOneAndUpdate(
+        { id },
+        { $set: updateFields },
+        { new: true }
+      ).lean();
+    }
+
+    const conv = this._memConversations.find((c) => c.id === id);
     if (!conv) return null;
-
-    conv.responsibility = 'assistant';
-    conv.isManualOverride = true;
-    conv.delegatedBy = 'client';
-    conv.actionStatus = 'action_required';
-    conv.delegatedAt = new Date().toISOString();
-    conv.confidenceScore = 1.0;
-    conv.pendingSuggestion = null;
-    conv.needsReview = false;
-    conv.aiReasoning = notes || 'Delegated to executive assistant Elena Rostova by client Marcus Vance.';
-
+    Object.assign(conv, updateFields);
     return conv;
   }
 
-  getCounts(accountId) {
-    let list = this.conversations;
+  async getCounts(accountId) {
+    if (this.isDbReady()) {
+      const baseQuery = {};
+      if (accountId && accountId !== 'all') {
+        baseQuery.accountId = accountId;
+      }
+      const allList = await Conversation.find(baseQuery).lean();
+      const unarchived = allList.filter((c) => !c.isArchived);
+
+      return {
+        all: unarchived.length,
+        unread: unarchived.filter((c) => c.isUnread).length,
+        actionRequired: unarchived.filter((c) => c.actionStatus === 'action_required').length,
+        assistantReply: unarchived.filter((c) => c.responsibility === 'assistant').length,
+        clientReply: unarchived.filter((c) => c.responsibility === 'client').length,
+        clientQueue: unarchived.filter((c) => c.responsibility === 'client' && c.actionStatus !== 'completed' && c.actionStatus !== 'resolved').length,
+        noReply: unarchived.filter((c) => c.responsibility === 'none').length,
+        needsReview: unarchived.filter((c) => c.needsReview || c.responsibility === 'review').length,
+        waiting: unarchived.filter((c) => c.actionStatus === 'waiting').length,
+        meetings: unarchived.filter((c) => c.category === 'meetings' || c.category === 'scheduling').length,
+        important: unarchived.filter((c) => c.isImportant).length,
+        archive: allList.filter((c) => c.isArchived).length
+      };
+    }
+
+    let list = this._memConversations;
     if (accountId && accountId !== 'all') {
       list = list.filter((c) => c.accountId === accountId);
     }

@@ -1,22 +1,22 @@
 import { storage } from '../services/storage.service.js';
 
-export const getAccounts = (req, res) => {
+export const getAccounts = async (req, res) => {
   try {
-    const accounts = storage.getAccounts();
+    const accounts = await storage.getAccounts();
     res.json({ success: true, data: accounts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const connectAccount = (req, res) => {
+export const connectAccount = async (req, res) => {
   try {
     const { provider, emailAddress, name } = req.body;
     if (!provider || !emailAddress) {
       return res.status(400).json({ success: false, message: 'Provider and emailAddress are required' });
     }
 
-    const account = storage.connectAccount({ provider, emailAddress, name });
+    const account = await storage.connectAccount({ provider, emailAddress, name });
     res.status(201).json({
       success: true,
       message: 'Simulated account connected successfully',
@@ -27,10 +27,10 @@ export const connectAccount = (req, res) => {
   }
 };
 
-export const syncAccount = (req, res) => {
+export const syncAccount = async (req, res) => {
   try {
     const { id } = req.params;
-    const account = storage.updateAccountSync(id);
+    const account = await storage.updateAccountSync(id);
     if (!account) {
       return res.status(404).json({ success: false, message: 'Account not found' });
     }
@@ -45,10 +45,10 @@ export const syncAccount = (req, res) => {
   }
 };
 
-export const disconnectAccount = (req, res) => {
+export const disconnectAccount = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = storage.disconnectAccount(id);
+    const deleted = await storage.disconnectAccount(id);
     if (!deleted) {
       return res.status(404).json({ success: false, message: 'Account not found' });
     }

@@ -18,13 +18,13 @@ class CopilotService {
     }
 
     const q = query.trim().toLowerCase();
-    const all = storage.getConversations({ accountId });
-    const counts = storage.getCounts(accountId);
+    const all = await storage.getConversations({ accountId });
+    const counts = await storage.getCounts(accountId);
 
     // Contextual: Specific conversation provided or requested
     let targetConversation = null;
     if (conversationId) {
-      targetConversation = storage.getConversationById(conversationId);
+      targetConversation = await storage.getConversationById(conversationId);
     }
 
     // 1. "Show me emails that need my attention" / "action required"

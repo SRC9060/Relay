@@ -8,8 +8,8 @@ import { geminiService } from '../services/gemini.service.js';
 export const getConversations = async (req, res) => {
   try {
     const { segment, accountId, q, filter } = req.query;
-    const conversations = storage.getConversations({ segment, accountId, q, filter });
-    const counts = storage.getCounts(accountId);
+    const conversations = await storage.getConversations({ segment, accountId, q, filter });
+    const counts = await storage.getCounts(accountId);
     res.json({
       success: true,
       data: conversations,
@@ -28,7 +28,7 @@ export const getConversations = async (req, res) => {
 export const getConversation = async (req, res) => {
   try {
     const { id } = req.params;
-    const conversation = storage.getConversationById(id);
+    const conversation = await storage.getConversationById(id);
     if (!conversation) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
@@ -41,11 +41,11 @@ export const getConversation = async (req, res) => {
 export const updateConversation = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.updateConversation(id, req.body);
+    const updated = await storage.updateConversation(id, req.body);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({ success: true, data: updated, counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -62,11 +62,11 @@ export const updateResponsibility = async (req, res) => {
         message: 'Invalid responsibility classification. Must be assistant, client, none, or review.'
       });
     }
-    const updated = storage.updateResponsibility(id, responsibility, reasoning);
+    const updated = await storage.updateResponsibility(id, responsibility, reasoning);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({ success: true, data: updated, counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -79,14 +79,14 @@ export const updateResponsibility = async (req, res) => {
 export const classifyConversation = async (req, res) => {
   try {
     const { id } = req.params;
-    const conv = storage.getConversationById(id);
+    const conv = await storage.getConversationById(id);
     if (!conv) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
 
     const classification = await classificationService.classifyConversation(conv);
-    const updated = storage.applyClassification(id, classification);
-    const counts = storage.getCounts();
+    const updated = await storage.applyClassification(id, classification);
+    const counts = await storage.getCounts();
 
     res.json({
       success: true,
@@ -105,15 +105,17 @@ export const classifyConversation = async (req, res) => {
 export const getSummary = async (req, res) => {
   try {
     const { id } = req.params;
-    const conv = storage.getConversationById(id);
+    const conv = await storage.getConversationById(id);
     if (!conv) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
 
     const summary = await summaryService.summarizeConversation(conv);
-    // Attach to conversation in storage
-    conv.aiSummary = summary.overview;
-    conv.summaryDetails = summary;
+    // Persist summary to conversation
+    await storage.updateConversation(id, {
+      aiSummary: summary.overview,
+      summaryDetails: summary
+    });
 
     res.json({
       success: true,
@@ -131,7 +133,7 @@ export const generateReply = async (req, res) => {
   try {
     const { id } = req.params;
     const { intent, instructions } = req.body;
-    const conv = storage.getConversationById(id);
+    const conv = await storage.getConversationById(id);
     if (!conv) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
@@ -157,7 +159,7 @@ export const simulateIncomingMessage = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
 
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({
       success: true,
       data: updated,
@@ -176,11 +178,11 @@ export const simulateIncomingMessage = async (req, res) => {
 export const acceptSuggestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.acceptSuggestion(id);
+    const updated = await storage.acceptSuggestion(id);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({ success: true, data: updated, counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -193,11 +195,11 @@ export const acceptSuggestion = async (req, res) => {
 export const dismissSuggestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.dismissSuggestion(id);
+    const updated = await storage.dismissSuggestion(id);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({ success: true, data: updated, counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -249,7 +251,7 @@ export const saveDraft = async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req.body;
-    const updated = storage.saveDraft(id, { body });
+    const updated = await storage.saveDraft(id, { body });
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
@@ -262,11 +264,11 @@ export const saveDraft = async (req, res) => {
 export const sendDraft = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.sendDraft(id);
+    const updated = await storage.sendDraft(id);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({
       success: true,
       data: updated,
@@ -282,11 +284,11 @@ export const sendDraft = async (req, res) => {
 export const restoreConversation = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.restoreConversation(id);
+    const updated = await storage.restoreConversation(id);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({ success: true, data: updated, counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -296,11 +298,11 @@ export const restoreConversation = async (req, res) => {
 export const markCompleted = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.markCompleted(id);
+    const updated = await storage.markCompleted(id);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({ success: true, data: updated, counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -313,11 +315,11 @@ export const markCompleted = async (req, res) => {
 export const markHandled = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = storage.markHandled(id);
+    const updated = await storage.markHandled(id);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({
       success: true,
       data: updated,
@@ -336,11 +338,11 @@ export const delegateToAssistant = async (req, res) => {
   try {
     const { id } = req.params;
     const { notes } = req.body;
-    const updated = storage.delegateToAssistant(id, notes);
+    const updated = await storage.delegateToAssistant(id, notes);
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Conversation not found' });
     }
-    const counts = storage.getCounts();
+    const counts = await storage.getCounts();
     res.json({
       success: true,
       data: updated,
@@ -355,7 +357,7 @@ export const delegateToAssistant = async (req, res) => {
 export const getCounts = async (req, res) => {
   try {
     const { accountId } = req.query;
-    const counts = storage.getCounts(accountId);
+    const counts = await storage.getCounts(accountId);
     res.json({ success: true, data: counts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

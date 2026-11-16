@@ -47,9 +47,10 @@ Relay implements an original **Warm Swiss Minimalism** aesthetic inspired by Jos
 
 ### Backend
 - **Node.js 20+** & **Express.js**: RESTful service for session management, account synchronization, AI classification, summarization, reply drafting, and copilot query answering.
-- **Google Gemini API**: Server-side LLM integration (`gemini-3.8-flash` / `gemini-2.5-flash`) with structured JSON schema outputs.
-- **High-Fidelity Deterministic Fallback**: Production-resilient fallback engine that operates seamlessly when `GEMINI_API_KEY` is not present, ensuring deterministic evaluation and 100% demo uptime.
-- **In-Memory & Storage Fallback**: Local persistence ensuring the prototype runs immediately without external database dependencies.
+- **MongoDB Atlas & Mongoose 8**: Cloud-hosted persistence with structured Mongoose schemas (`User`, `Account`, `Conversation`), idempotent seeding (`$setOnInsert`), and connection lifecycle management.
+- **Google Gemini API**: Server-side LLM integration (`gemini-3.8-flash` / `gemini-3.5-flash-lite`) with structured JSON schema outputs and multi-tier model failover.
+- **High-Fidelity Deterministic Fallback**: Production-resilient fallback engine that operates seamlessly when external APIs are unreachable, ensuring deterministic evaluation and 100% demo uptime.
+- **Resilient Fallback Storage**: Graceful in-memory fallback allowing isolated local test execution when offline.
 
 ---
 
@@ -94,7 +95,13 @@ relay/
 │   └── test/
 │       └── invariants.test.js           # 25 automated UI invariant, routing, and component tests
 │
-├── server/                              # Backend API (Node.js + Express)
+├── server/                              # Backend API (Node.js + Express + Mongoose)
+│   ├── config/
+│   │   └── db.js                        # MongoDB Atlas connection manager & health checks
+│   ├── models/                          # Mongoose ODM schemas
+│   │   ├── User.model.js                # Users & demo persona credentials
+│   │   ├── Account.model.js             # Connected email mailboxes & sync timestamps
+│   │   └── Conversation.model.js        # Core conversation schema & nested messages
 │   ├── controllers/                     # Route handlers (auth, accounts, conversations)
 │   ├── routes/                          # REST route definitions (/api/conversations/*)
 │   ├── services/
@@ -103,11 +110,12 @@ relay/
 │   │   ├── summary.service.js           # LLM-powered conversation summaries
 │   │   ├── reply.service.js             # Contextual executive reply generator
 │   │   ├── copilot.service.js           # Data-grounded mailbox Copilot
-│   │   └── storage.service.js           # In-memory persistence, manual overrides, simulation
+│   │   ├── seed.service.js              # Idempotent database seeder ($setOnInsert)
+│   │   └── storage.service.js           # MongoDB persistence service with resilient fallback
 │   ├── data/
 │   │   └── seedData.js                  # 18 rich executive conversation seeds
 │   ├── test/
-│   │   └── api.test.js                  # 29 automated REST API, mock, AI intelligence & client queue tests
+│   │   └── api.test.js                  # 33 automated REST API, mock, AI & persistence tests
 │   ├── app.js                           # Express application configuration
 │   └── server.js                        # Server entry point
 │
@@ -207,22 +215,23 @@ npm run client:dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Configuring Gemini API (Optional)
-To test with live Gemini API requests:
-1. Create a `server/.env` file:
+### Configuring MongoDB Atlas & Gemini API
+To run with live MongoDB Atlas persistence and live Gemini inference:
+1. Configure `server/.env`:
 ```env
+MONGODB_URI=mongodb+srv://relay_app_user:<db_password>@cluster0.xzqxzjs.mongodb.net/relay?retryWrites=true&w=majority&appName=Cluster0
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-3.8-flash
 ```
-2. Restart the backend server.
-*(If omitted, Relay automatically runs on the high-fidelity deterministic fallback engine with full interactive functionality).*
+2. Restart the backend server. The database seeder will automatically initialize records using idempotent `$setOnInsert` operations without duplicating on restart.
+*(If MONGODB_URI is omitted, Relay runs on resilient local fallback storage; if GEMINI_API_KEY is omitted, Relay runs on the deterministic executive AI fallback).*
 
 ### Running Automated Test Suites
 ```bash
-# Run server test suite (29 tests covering REST, AI classification, overrides, summaries, copilot, client queue & delegation)
+# Run server test suite (33 tests covering REST, AI classification, overrides, summaries, copilot, client queue, persistence & idempotent seeding)
 npm --prefix server test
 
-# Run client invariant test suite (21 tests covering landing page, simplified sidebar, responsibility filter tabs, list-first inbox, AI triage, and client actions)
+# Run client invariant test suite (25 tests covering landing page, simplified sidebar, responsibility filter tabs, list-first inbox, AI triage, 3D interactions, and client actions)
 npm --prefix client test
 
 # Run client production build
