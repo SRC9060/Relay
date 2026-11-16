@@ -341,7 +341,11 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
                   Elena Rostova (Assistant)
                 </button>
                 <button
-                  onClick={() => setShowProfileMenu(false)}
+                  onClick={async () => {
+                    await switchRole('client');
+                    setShowProfileMenu(false);
+                    navigate('/client');
+                  }}
                   style={{
                     width: '100%',
                     display: 'flex',
