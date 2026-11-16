@@ -222,7 +222,7 @@ export default function LoginPage() {
                   </span>
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>
-                  Elena Rostova
+                  Ananya Sharma
                 </div>
               </button>
 
@@ -247,7 +247,7 @@ export default function LoginPage() {
                   </span>
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>
-                  Marcus Vance
+                  Arjun Mehta
                 </div>
               </button>
             </div>
@@ -277,7 +277,7 @@ export default function LoginPage() {
               icon={Mail}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="elena.rostova@relay-assistant.io"
+              placeholder="ananya.sharma@relay-assistant.in"
               autoComplete="username"
             />
 

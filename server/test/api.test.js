@@ -145,12 +145,12 @@ test('GET /api/conversations filters by segment (client-reply)', async () => {
 });
 
 test('GET /api/conversations performs search query across sender & subject', async () => {
-  const res = await fetch(`${baseUrl}/api/conversations?q=Sterling`);
+  const res = await fetch(`${baseUrl}/api/conversations?q=Singhania`);
   assert.equal(res.status, 200);
   const json = await res.json();
   assert.equal(json.success, true);
   assert.ok(json.data.length > 0);
-  assert.ok(json.data.some((c) => c.sender.name.includes('Sterling') || c.subject.includes('Sterling')));
+  assert.ok(json.data.some((c) => c.sender.name.includes('Singhania') || c.subject.includes('Singhania')));
 });
 
 test('GET /api/conversations/:id returns single conversation with full message history', async () => {
@@ -337,7 +337,7 @@ test('POST /api/conversations/:id/generate-reply creates contextual draft with s
   const res = await fetch(`${baseUrl}/api/conversations/conv_04/generate-reply`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ intent: 'confirm', instructions: 'Confirm Marcus will attend with 4 guests.' })
+    body: JSON.stringify({ intent: 'confirm', instructions: 'Confirm Arjun will attend with 4 guests.' })
   });
   assert.equal(res.status, 200);
   const json = await res.json();
@@ -352,7 +352,7 @@ test('Incoming Message Simulation re-evaluates classification while preserving h
   await fetch(`${baseUrl}/api/conversations/conv_01/responsibility`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ responsibility: 'assistant', reasoning: 'Elena to manage document logistics.' })
+    body: JSON.stringify({ responsibility: 'assistant', reasoning: 'Ananya to manage document logistics.' })
   });
 
   // 2. Simulate new incoming message suggesting client action
@@ -360,7 +360,7 @@ test('Incoming Message Simulation re-evaluates classification while preserving h
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      body: 'Marcus, we urgently need your personal written signature on the deed of indemnity before 5 PM today.'
+      body: 'Arjun, we urgently need your personal written signature on the deed of indemnity before 5 PM today.'
     })
   });
   assert.equal(simRes.status, 200);
@@ -444,7 +444,7 @@ test('POST /api/conversations/:id/handled marks conversation completed by client
 });
 
 test('POST /api/conversations/:id/delegate assigns task to assistant with human override and notes', async () => {
-  const notes = 'Elena, please send regrets for the dinner but accept the afternoon roundtable.';
+  const notes = 'Ananya, please send regrets for the dinner but accept the afternoon roundtable.';
   const res = await fetch(`${baseUrl}/api/conversations/conv_10/delegate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

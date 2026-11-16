@@ -15,7 +15,7 @@ class SummaryService {
     }).join('\n\n');
 
     return `
-Provide an executive email summary for Assistant Elena Rostova managing emails for Marcus Vance.
+Provide an executive email summary for Assistant Ananya Sharma managing emails for Arjun Mehta.
 
 Subject: ${conversation.subject}
 From: ${sender}
@@ -50,30 +50,30 @@ Respond with ONLY valid JSON:
     let nextStep = 'Review latest message and prepare response.';
 
     if (text.toLowerCase().includes('flight') || text.toLowerCase().includes('charter')) {
-      overview = `Lufthansa Private Jet has provided an executive charter quotation for Zurich (ZRH) to London City (LCY) on an Embraer Phenom 300 (€12,450 EUR).`;
-      latest = `Dispatch secured a 24-hour option hold on tail D-CSMC and requested passenger manifest confirmation by 12:00 CET tomorrow.`;
+      overview = `Club One Air Executive Charter has provided an executive quotation for Mumbai (BOM) to New Delhi (DEL) on a Dassault Falcon 2000 (₹12,45,000 INR).`;
+      latest = `Dispatch secured a 24-hour option hold on tail VT-COA and requested passenger manifest confirmation by 12:00 IST tomorrow.`;
       decisions = ['Route and aircraft type verified', 'Option hold placed until tomorrow noon'];
-      questions = ['Confirmation of passenger manifest details for UK Border Force'];
-      deadlines = ['Tomorrow 12:00 CET (manifest deadline)', '24-hour booking hold expiration'];
-      nextStep = 'Confirm passenger list and authorize slot booking on behalf of Marcus Vance.';
+      questions = ['Confirmation of passenger manifest details for DGCA and AAI clearances'];
+      deadlines = ['Tomorrow 12:00 IST (manifest deadline)', '24-hour booking hold expiration'];
+      nextStep = 'Confirm passenger list and authorize slot booking on behalf of Arjun Mehta.';
     } else if (text.toLowerCase().includes('board resolution') || text.toLowerCase().includes('series b')) {
-      overview = `Chairman David Sterling has forwarded the definitive Series B shareholder written consent package finalized by Latham & Watkins.`;
-      latest = `David sent an urgent reminder highlighting that wire authorizations and escrow closing depend on the executed Section 4 signature page.`;
+      overview = `Chairman Vikram Singhania has forwarded the definitive Series B shareholder written consent package finalized by Shardul Amarchand Mangaldas.`;
+      latest = `Vikram sent an urgent reminder highlighting that wire authorizations and escrow closing depend on the executed Section 4 signature page.`;
       decisions = ['Legal counsel signed off on pro-rata rights and protective covenants'];
-      questions = ['Formal execution signature required from Marcus Vance'];
-      deadlines = ['Today by 5:00 PM EST for closing escrow'];
-      nextStep = 'Escalate to Marcus Vance in Client View for immediate signature review.';
-    } else if (text.toLowerCase().includes('hotel') || text.toLowerCase().includes('dining') || text.toLowerCase().includes('connaught')) {
-      overview = `The Connaught Hotel concierge confirmed the Sommelier Room private dining reservation for 8 guests this Thursday evening.`;
-      latest = `Concierge is requesting final dietary restrictions and wine pairing preferences prior to Thursday service.`;
-      decisions = ['Sommelier Room confirmed for 8 guests'];
+      questions = ['Formal execution signature required from Arjun Mehta'];
+      deadlines = ['Today by 5:00 PM IST for closing escrow'];
+      nextStep = 'Escalate to Arjun Mehta in Client View for immediate signature review.';
+    } else if (text.toLowerCase().includes('hotel') || text.toLowerCase().includes('dining') || text.toLowerCase().includes('taj')) {
+      overview = `The Taj Mahal Palace concierge confirmed the Sea Lounge Private Suite dining reservation for 8 guests this Thursday evening.`;
+      latest = `Concierge is requesting final dietary restrictions and cellar pairing preferences prior to Thursday service.`;
+      decisions = ['Sea Lounge Private Suite confirmed for 8 guests'];
       questions = ['Dietary restrictions and final guest list confirmation'];
-      deadlines = ['Wednesday 18:00 for dietary finalization'];
-      nextStep = 'Elena Rostova to send confirmed guest dietary requirements and select wine pairing.';
-    } else if (text.toLowerCase().includes('summit') || text.toLowerCase().includes('clara hayes')) {
-      overview = `London Technology Summit coordinator Clara Hayes requesting Marcus Vance's arrival window and transfers for next Wednesday.`;
-      latest = `Elena drafted arrival window confirmation for Grosvenor House transfer.`;
-      decisions = ['Executive Suite reserved at Grosvenor House'];
+      deadlines = ['Wednesday 18:00 IST for dietary finalization'];
+      nextStep = 'Ananya Sharma to send confirmed guest dietary requirements and select cellar pairing.';
+    } else if (text.toLowerCase().includes('summit') || text.toLowerCase().includes('pooja') || text.toLowerCase().includes('bengaluru')) {
+      overview = `Bengaluru Tech Summit coordinator Pooja Kulkarni requesting Arjun Mehta's arrival window and transfers for next Wednesday.`;
+      latest = `Ananya drafted arrival window confirmation for The Leela Palace Bengaluru transfer.`;
+      decisions = ['Executive Suite reserved at The Leela Palace Bengaluru'];
       questions = ['Preferred arrival time window on Wednesday morning'];
       deadlines = ['Monday close of business'];
       nextStep = 'Send draft arrival confirmation and finalize airport car transfer.';

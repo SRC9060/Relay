@@ -6,7 +6,7 @@ import { geminiService } from './gemini.service.js';
  * current triage classification, and user-selected reply intent.
  */
 class ReplyService {
-  buildReplyPrompt(conversation, { intent = 'confirm', instructions = '', assistantName = 'Elena Rostova', clientName = 'Marcus Vance' }) {
+  buildReplyPrompt(conversation, { intent = 'confirm', instructions = '', assistantName = 'Ananya Sharma', clientName = 'Arjun Mehta' }) {
     const sender = conversation.sender ? `${conversation.sender.name || 'Unknown'} (${conversation.sender.email || ''})` : 'Unknown';
     const messages = (conversation.messages || []).map((m, idx) => {
       const msgSender = m.sender ? `${m.sender.name || 'Unknown'}` : 'Unknown';
@@ -44,7 +44,7 @@ Respond with ONLY valid JSON:
 `.trim();
   }
 
-  generateDeterministicReply(conversation, { intent = 'confirm', instructions = '', assistantName = 'Elena Rostova', clientName = 'Marcus Vance' }) {
+  generateDeterministicReply(conversation, { intent = 'confirm', instructions = '', assistantName = 'Ananya Sharma', clientName = 'Arjun Mehta' }) {
     const subject = conversation.subject || 'Correspondence';
     const recipientName = conversation.sender?.name ? conversation.sender.name.split(' ')[0] : 'Sir/Madam';
     const text = (conversation.preview || '') + ' ' + ((conversation.messages?.[0]?.body) || '');
@@ -56,36 +56,36 @@ Respond with ONLY valid JSON:
       case 'confirm':
       case 'confirmation':
         if (text.toLowerCase().includes('flight') || text.toLowerCase().includes('charter')) {
-          body = `Dear ${recipientName},\n\nThank you for the prompt dispatch quotation for the Zurich to London City flight on the Embraer Phenom 300 (€12,450 EUR).\n\nWe would like to formally confirm the reservation and release the passenger manifest. Mr. Vance will be traveling with one colleague; I will transmit their passport details shortly before the 12:00 CET deadline tomorrow.\n\nPlease proceed with slot confirmation and send over the final invoice for payment authorization.\n\nWarm regards,\n${assistantName}\nExecutive Assistant to ${clientName}`;
-          keyPoints = ['Confirmed Phenom 300 charter quote', 'Accepted 12:00 CET manifest deadline', 'Requested final invoice'];
-        } else if (text.toLowerCase().includes('dining') || text.toLowerCase().includes('connaught')) {
-          body = `Dear ${recipientName},\n\nThank you for confirming the Sommelier Room for Thursday evening. We are delighted with the arrangements.\n\nMr. Vance will be hosting seven guests (eight total). We have two pescatarian guests and no severe allergies. We will gladly defer to the Head Sommelier for the recommended vintage pairings.\n\nThank you for your attentive assistance,\n${assistantName}\nExecutive Office of ${clientName}`;
-          keyPoints = ['Confirmed 8 guests for Thursday', 'Specified dietary restrictions', 'Approved sommelier wine pairing'];
+          body = `Dear ${recipientName},\n\nThank you for the prompt dispatch quotation for the Mumbai to New Delhi flight on the Dassault Falcon 2000 (₹12,45,000 INR).\n\nWe would like to formally confirm the reservation and release the passenger manifest. Mr. Mehta will be traveling with one colleague; I will transmit their government ID details shortly before the 12:00 IST deadline tomorrow.\n\nPlease proceed with slot confirmation and send over the final invoice for payment authorization.\n\nWarm regards,\n${assistantName}\nExecutive Assistant to ${clientName}`;
+          keyPoints = ['Confirmed Falcon 2000 charter quote', 'Accepted 12:00 IST manifest deadline', 'Requested final invoice'];
+        } else if (text.toLowerCase().includes('dining') || text.toLowerCase().includes('taj') || text.toLowerCase().includes('connaught')) {
+          body = `Dear ${recipientName},\n\nThank you for confirming the Sea Lounge Private Suite for Thursday evening. We are delighted with the arrangements.\n\nMr. Mehta will be hosting seven guests (eight total). We have two vegetarian guests and no severe allergies. We will gladly defer to the Head Sommelier for the recommended cellar pairings.\n\nThank you for your attentive assistance,\n${assistantName}\nExecutive Office of ${clientName}`;
+          keyPoints = ['Confirmed 8 guests for Thursday', 'Specified dietary restrictions', 'Approved cellar pairing'];
         } else {
-          body = `Dear ${recipientName},\n\nThank you for your message regarding ${subject}.\n\nI have reviewed the details with Mr. Vance and we are pleased to confirm that the proposed arrangements are approved. Please proceed on this basis.\n\nShould you require any additional details, please let me know.\n\nSincerely,\n${assistantName}\nExecutive Office of ${clientName}`;
+          body = `Dear ${recipientName},\n\nThank you for your message regarding ${subject}.\n\nI have reviewed the details with Mr. Mehta and we are pleased to confirm that the proposed arrangements are approved. Please proceed on this basis.\n\nShould you require any additional details, please let me know.\n\nSincerely,\n${assistantName}\nExecutive Office of ${clientName}`;
           keyPoints = ['Confirmed proposed details', 'Authorized counterparty to proceed'];
         }
         break;
 
       case 'request_info':
       case 'clarification':
-        body = `Dear ${recipientName},\n\nThank you for sharing the latest update regarding "${subject}".\n\nBefore Mr. Vance provides his final sign-off, could you kindly clarify the specific timelines and any immediate deliverables required from our side?\n\nOnce we have those parameters, we will turn around our feedback promptly.\n\nBest regards,\n${assistantName}\nExecutive Office of ${clientName}`;
+        body = `Dear ${recipientName},\n\nThank you for sharing the latest update regarding "${subject}".\n\nBefore Mr. Mehta provides his final sign-off, could you kindly clarify the specific timelines and any immediate deliverables required from our side?\n\nOnce we have those parameters, we will turn around our feedback promptly.\n\nBest regards,\n${assistantName}\nExecutive Office of ${clientName}`;
         keyPoints = ['Acknowledged receipt', 'Requested timeline clarification', 'Committed to prompt turnaround'];
         break;
 
       case 'approve':
       case 'approval':
-        body = `Dear ${recipientName},\n\nMr. Vance has reviewed the document package for "${subject}" and provided his formal approval.\n\nAttached is the executed counterpart signature page for your records. Kindly confirm receipt and keep us apprised of the closing timeline.\n\nBest regards,\n${assistantName}\nOn behalf of ${clientName}`;
-        keyPoints = ['Conveyed Marcus Vance executive approval', 'Provided signature confirmation', 'Requested closing confirmation'];
+        body = `Dear ${recipientName},\n\nMr. Mehta has reviewed the document package for "${subject}" and provided his formal approval.\n\nAttached is the executed counterpart signature page for your records. Kindly confirm receipt and keep us apprised of the closing timeline.\n\nBest regards,\n${assistantName}\nOn behalf of ${clientName}`;
+        keyPoints = ['Conveyed Arjun Mehta executive approval', 'Provided signature confirmation', 'Requested closing confirmation'];
         break;
 
       case 'reschedule':
-        body = `Dear ${recipientName},\n\nThank you for following up. Due to an unavoidable shift in Mr. Vance’s executive calendar, we need to adjust our scheduled discussion regarding "${subject}".\n\nCould we propose either of the following alternative windows:\n• Tuesday, Nov 17 at 14:00 GMT\n• Wednesday, Nov 18 at 10:30 GMT\n\nPlease let me know if either works for your team.\n\nKind regards,\n${assistantName}\nExecutive Assistant to ${clientName}`;
+        body = `Dear ${recipientName},\n\nThank you for following up. Due to an unavoidable shift in Mr. Mehta’s executive calendar, we need to adjust our scheduled discussion regarding "${subject}".\n\nCould we propose either of the following alternative windows:\n• Tuesday, Nov 17 at 14:00 IST\n• Wednesday, Nov 18 at 10:30 IST\n\nPlease let me know if either works for your team.\n\nKind regards,\n${assistantName}\nExecutive Assistant to ${clientName}`;
         keyPoints = ['Politely requested reschedule', 'Offered two alternative meeting slots', 'Requested confirmation'];
         break;
 
       default:
-        body = `Dear ${recipientName},\n\nThank you for your correspondence regarding "${subject}".\n\n${instructions ? instructions : 'We have received your note and are reviewing the materials with Mr. Vance. We will revert with our formal response shortly.'}\n\nWarm regards,\n${assistantName}\nExecutive Office of ${clientName}`;
+        body = `Dear ${recipientName},\n\nThank you for your correspondence regarding "${subject}".\n\n${instructions ? instructions : 'We have received your note and are reviewing the materials with Mr. Mehta. We will revert with our formal response shortly.'}\n\nWarm regards,\n${assistantName}\nExecutive Office of ${clientName}`;
         keyPoints = ['Custom response drafted', 'Polite executive sign-off'];
     }
 

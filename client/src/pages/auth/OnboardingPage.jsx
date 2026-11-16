@@ -26,7 +26,7 @@ export default function OnboardingPage() {
     {
       id: 'gmail',
       name: 'Google Workspace',
-      defaultEmail: 'marcus.vance@vancetech.io',
+      defaultEmail: 'arjun.mehta@mehtaventures.in',
       iconColor: '#EA4335',
       description: 'Primary inbox, sent correspondence, and calendar metadata',
       logo: (
@@ -41,7 +41,7 @@ export default function OnboardingPage() {
     {
       id: 'outlook',
       name: 'Microsoft 365',
-      defaultEmail: 'm.vance@board-advisory.com',
+      defaultEmail: 'arjun.mehta@board-advisory.in',
       iconColor: '#0078D4',
       description: 'Corporate Exchange mailbox and executive meeting requests',
       logo: (

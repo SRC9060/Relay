@@ -10,7 +10,7 @@ export default function ClientDelegateModal({ conversation, isOpen, onClose, onC
   if (!isOpen || !conversation) return null;
 
   const quickDirectives = [
-    'Elena, please draft standard response acknowledging receipt.',
+    'Ananya, please draft standard response acknowledging receipt.',
     'Please decline politely on my behalf; schedule is constrained.',
     'Coordinate meeting times directly with them for next Thursday.',
     'Review terms and prepare a redlined comparison for my review.'
@@ -80,7 +80,7 @@ export default function ClientDelegateModal({ conversation, isOpen, onClose, onC
             <div>
               <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Delegate to Assistant</h3>
               <p style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>
-                Hand over to Elena Rostova with priority assignment
+                Hand over to Ananya Sharma with priority assignment
               </p>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function ClientDelegateModal({ conversation, isOpen, onClose, onC
             }}
           >
             <Sparkles size={12} color="var(--color-primary)" />
-            Quick instructions for Elena
+            Quick instructions for Ananya
           </label>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {quickDirectives.map((directive, idx) => (
@@ -178,7 +178,7 @@ export default function ClientDelegateModal({ conversation, isOpen, onClose, onC
             id="custom-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Add any specific guidelines, limits, or talking points for Elena..."
+            placeholder="Add any specific guidelines, limits, or talking points for Ananya..."
             rows={3}
             style={{
               width: '100%',
@@ -210,7 +210,7 @@ export default function ClientDelegateModal({ conversation, isOpen, onClose, onC
             onClick={handleConfirm}
             loading={isSubmitting}
           >
-            Delegate to Elena
+            Delegate to Ananya
           </Button>
         </div>
       </motion.div>

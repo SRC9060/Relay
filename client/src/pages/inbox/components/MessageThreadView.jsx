@@ -35,11 +35,13 @@ export default function MessageThreadView({ conversation }) {
         const senderObj = (msg && typeof msg.sender === 'object' && msg.sender !== null) ? msg.sender : { name: typeof msg?.sender === 'string' ? msg.sender : 'Unknown Sender', email: '' };
         const senderName = senderObj.name || 'Unknown Sender';
         const senderEmail = senderObj.email || '';
-        const isElena =
+        const isAssistant =
           (senderEmail && senderEmail.includes('relay-assistant')) ||
+          senderName.toLowerCase().includes('ananya') ||
           senderName.toLowerCase().includes('elena');
-        const isMarcus =
-          (senderEmail && (senderEmail.includes('vancetech') || senderEmail.includes('marcus'))) ||
+        const isClient =
+          (senderEmail && (senderEmail.includes('mehtaventures') || senderEmail.includes('vancetech') || senderEmail.includes('arjun') || senderEmail.includes('marcus'))) ||
+          senderName.toLowerCase().includes('arjun') ||
           senderName.toLowerCase().includes('marcus');
 
         const initials = senderName
@@ -50,10 +52,10 @@ export default function MessageThreadView({ conversation }) {
           .slice(0, 2)
           .toUpperCase() || 'CX';
 
-        const cardBg = isElena ? '#F5F8F6' : isMarcus ? '#FAF7F2' : 'var(--color-surface)';
-        const accentBorder = isElena
+        const cardBg = isAssistant ? '#F5F8F6' : isClient ? '#FAF7F2' : 'var(--color-surface)';
+        const accentBorder = isAssistant
           ? '3px solid var(--color-primary)'
-          : isMarcus
+          : isClient
           ? '3px solid var(--color-resp-client)'
           : 'var(--border-subtle)';
 
@@ -80,12 +82,12 @@ export default function MessageThreadView({ conversation }) {
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    backgroundColor: isElena
+                    backgroundColor: isAssistant
                       ? 'var(--color-primary)'
-                      : isMarcus
+                      : isClient
                       ? 'var(--color-resp-client)'
                       : 'var(--color-sage)',
-                    color: (isElena || isMarcus) ? '#FFFFFF' : 'var(--color-primary)',
+                    color: (isAssistant || isClient) ? '#FFFFFF' : 'var(--color-primary)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -101,7 +103,7 @@ export default function MessageThreadView({ conversation }) {
                     <span style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-charcoal)' }}>
                       {senderName}
                     </span>
-                    {isElena && (
+                    {isAssistant && (
                       <span
                         style={{
                           fontSize: '10px',
@@ -115,7 +117,7 @@ export default function MessageThreadView({ conversation }) {
                         Assistant
                       </span>
                     )}
-                    {isMarcus && (
+                    {isClient && (
                       <span
                         style={{
                           fontSize: '10px',

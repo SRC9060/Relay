@@ -1,6 +1,6 @@
 # Relay — AI-Powered Personal Assistant Email Workspace
 
-Relay is a high-conviction, dual-experience email workspace engineered specifically for **Executive Assistants** (Elena Rostova) and their **Clients / Managing Partners** (Marcus Vance).
+Relay is a high-conviction, dual-experience email workspace engineered specifically for **Executive Assistants** (Ananya Sharma) and their **Clients / Managing Partners** (Arjun Mehta).
 
 Rather than reproducing generic email dashboards or copying legacy clients, Relay is designed around a singular, high-leverage principle: **AI-Powered Reply Responsibility**. Every incoming conversation is classified into clear, actionable responsibility queues:
 - **Assistant to Reply**: Routine coordination, appointment scheduling, flight/hotel logistics, and administrative follow-ups.
@@ -78,7 +78,7 @@ relay/
 │   │   │   │   └── HomePage.jsx         # Hero, product preview, how it works, persona cards, demo modal
 │   │   │   ├── auth/                    # Login, Signup, Onboarding screens
 │   │   │   ├── assistant/               # Redesigned Overview Dashboard & AIAssistantPage (Copilot)
-│   │   │   ├── client/                  # Dedicated Executive Workspace (/client) for Marcus Vance
+│   │   │   ├── client/                  # Dedicated Executive Workspace (/client) for Arjun Mehta
 │   │   │   │   ├── components/          # AttentionQueueItem, DecisionDetailView, DelegationModal
 │   │   │   │   └── ClientQueuePage.jsx  # Distraction-free executive decision desk
 │   │   │   ├── inbox/                   # List-first Inbox Workspace & Focused Detail Reader
@@ -248,14 +248,14 @@ To ensure the prototype immediately stands out as an intentional, production-gra
 - Unauthenticated visitors land directly on a public homepage rather than being bounced to a login form.
 - **Header**: Relay mark, product anchors (*Product*, *How it works*, *For Assistants & Clients*), and direct demo entry buttons.
 - **Hero & Approved Copy**: *"Every conversation. The right person to respond."* with concise value proposition and primary CTAs.
-- **Realistic Relay Preview Mockup**: Displays authentic executive threads across all three core categories (*Board Resolution: Series B Written Consent* — Client to Reply; *London Technology Summit: Suite & Transfers* — Assistant to Reply; *Bloomberg Markets* — No Reply Needed) with AI reasoning and routing cards.
+- **Realistic Relay Preview Mockup**: Displays authentic executive threads across all three core categories (*Board Resolution: Series B Written Consent* — Client to Reply; *Bengaluru Tech Summit: Suite & Transfers* — Assistant to Reply; *The Ken Executive Brief* — No Reply Needed) with AI reasoning and routing cards.
 - **Dual Persona Guide**: Explains the distinct high-leverage workflows for Executive Assistants and Clients.
-- **One-Click Demo Launcher Modal**: Instantaneous authentication as Elena Rostova (Assistant) or Marcus Vance (Client).
+- **One-Click Demo Launcher Modal**: Instantaneous authentication as Ananya Sharma (Assistant) or Arjun Mehta (Client).
 
 ### B. Simplified Information Architecture
 - The sidebar was streamlined from a cluttered list into two focused groupings:
   - **Primary**: Overview (`/app/overview`), Inbox (`/app/inbox`), Needs Attention (`/app/action-required`), Waiting (`/app/waiting`), Meetings (`/app/meetings`), Important (`/app/important`).
-  - **Workspace Tools**: AI Assistant (`/app/ai-assistant`), Archived (`/app/archive`), Connected Accounts (`/app/accounts`), Settings (`/app/settings`).
+  - **Workspace Tools**: AI Assistant (`/app/ai-assistant`), Archived (`/app/archive`), Connected Accounts (`/app/accounts`), Settings (`/app/settings`), Website Home (`/`).
 - Responsibility classifications are elevated into intuitive filter tabs within the Inbox list header (`All`, `Assistant to Reply`, `Client to Reply`, `No Reply Needed`, `Needs Review`), keeping the sidebar clean while preserving deep-linking capabilities.
 
 ### C. List-First Inbox Workflow
@@ -267,19 +267,19 @@ To ensure the prototype immediately stands out as an intentional, production-gra
 
 ### D. Redesigned Assistant Dashboard ("What needs attention today?")
 - Replaces generic stat counters with a prioritized, calm executive layout:
-  1. **Client Decisions**: High-stakes approvals awaiting Marcus.
-  2. **Assistant Actions**: Drafting, travel, and logistics tasks for Elena.
+  1. **Client Decisions**: High-stakes approvals awaiting Arjun.
+  2. **Assistant Actions**: Drafting, travel, and logistics tasks for Ananya.
   3. **Waiting for Reply**: Outgoing emails awaiting counterparty response.
   4. **Upcoming Meetings**: Time-sensitive executive engagements.
 - **Today's Action Queue**: Prioritized list of unhandled conversations with semantic left-border color coding.
-- **Client Queue Rail**: Direct glance at Marcus Vance's pending items with one-click navigation to Marcus's decision desk.
+- **Client Queue Rail**: Direct glance at Arjun Mehta's pending items with one-click navigation to Arjun's decision desk.
 
 ---
 
 ## 7. Client Experience & Shared Workflows (Milestone 4)
 
 ### A. Minimalist Executive Workspace (`/client`)
-- Dedicated, distraction-free environment tailored for Marcus Vance (`role: 'client'`).
+- Dedicated, distraction-free environment tailored for Arjun Mehta (`role: 'client'`).
 - Displays a warm personal greeting, outstanding attention count, and only conversations where `responsibility === 'client'` and `actionStatus !== 'completed' && actionStatus !== 'resolved'`.
 - Cards clearly display counterparty details, subject, timestamps, short AI summary, and the explicit `clientAttentionReason` callout (e.g. statutory written consent, advisory term sign-off).
 - Full original message history reader with sender details, recipients, and chronological dialogue.
@@ -288,17 +288,17 @@ To ensure the prototype immediately stands out as an intentional, production-gra
 1. **Mark as Handled**:
    - Primary action button.
    - Sets `actionStatus = 'completed'`, preserves `responsibility = 'client'`, and sets `handledBy = 'client'`.
-   - Removes conversation from Marcus's attention queue and updates Elena's dashboard with completed status.
+   - Removes conversation from Arjun's attention queue and updates Ananya's dashboard with completed status.
 2. **Ask Assistant to Take Over**:
    - Secondary action button with delegation popover/modal.
-   - Allows optional custom directives (e.g. "Elena, please draft standard counter-terms...").
+   - Allows optional custom directives (e.g. "Ananya, please draft standard counter-terms...").
    - Sets `responsibility = 'assistant'`, `isManualOverride = true`, `delegatedBy = 'client'`, `actionStatus = 'action_required'`, and confidence to 1.0.
-   - Immediately transfers the conversation to Elena's priority action queue and decrements Marcus's pending count.
+   - Immediately transfers the conversation to Ananya's priority action queue and decrements Arjun's pending count.
 
 ### C. Shared Data Architecture & Role Switching
 - Both workspaces operate on unified conversation records in `ConversationContext` and backend storage.
 - TopNav integrates a "Client View" button navigating directly to `/client`.
-- Profile menu enables instantaneous switching between Elena Rostova (Assistant) and Marcus Vance (Client).
+- Profile menu enables instantaneous switching between Ananya Sharma (Assistant) and Arjun Mehta (Client).
 
 ---
 
@@ -308,7 +308,7 @@ To ensure the prototype immediately stands out as an intentional, production-gra
 |---|---|
 | **Why is Needs Review not a 4th responsibility?** | Mixing triage classification (`assistant`, `client`, `none`) with review status creates semantic ambiguity. An email is inherently something the client or assistant should handle; low confidence merely means the AI is unsure of which one. Keeping `needsReview: boolean` allows the model to propose its best guess while flagging that human verification is needed. |
 | **How are human overrides protected from being overwritten by new messages?** | In `server/services/storage.service.js`, manual changes flag `isManualOverride: true`. When new messages enter the conversation (via webhook or incoming message simulation), the AI classification is re-run. If `isManualOverride` is true, the current responsibility remains locked, and the new AI assessment is queued as `pendingSuggestion` with clear Accept / Dismiss options for the user. |
-| **How does client delegation update the assistant workspace?** | In `storage.service.js`, `delegateToAssistant(id, notes)` modifies the single authoritative record (`responsibility = 'assistant'`, `isManualOverride = true`, `delegatedBy = 'client'`). Because `getCounts()` dynamically computes segment totals from this shared dataset, Elena's `assistantReply` and `actionRequired` counts increment synchronously. |
+| **How does client delegation update the assistant workspace?** | In `storage.service.js`, `delegateToAssistant(id, notes)` modifies the single authoritative record (`responsibility = 'assistant'`, `isManualOverride = true`, `delegatedBy = 'client'`). Because `getCounts()` dynamically computes segment totals from this shared dataset, Ananya's `assistantReply` and `actionRequired` counts increment synchronously. |
 | **How does the Copilot avoid hallucinations?** | The Copilot (`copilot.service.js`) queries the underlying `storage.service.js` database first. For list queries, it filters actual conversations using status flags and attaches those exact records. For summary queries, it feeds only the selected conversation's messages to the model. |
 | **Why provide a deterministic fallback alongside Gemini?** | External LLM APIs can hit rate limits, network interruptions, or quota limits during evaluation demonstrations. The deterministic engine guarantees that the prototype works reliably out-of-the-box, providing a 100% dependable review experience. |
 

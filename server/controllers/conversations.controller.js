@@ -347,7 +347,7 @@ export const delegateToAssistant = async (req, res) => {
       success: true,
       data: updated,
       counts,
-      message: 'Delegated to executive assistant Elena Rostova.'
+      message: 'Delegated to executive assistant Ananya Sharma.'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ArrowLeft } from 'lucide-react';
 
 export default function AuthLayout() {
   const location = useLocation();
@@ -79,7 +79,35 @@ export default function AuthLayout() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <Link
+            to="/"
+            className="relay-auth-back-link"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '12.5px',
+              fontWeight: 600,
+              color: 'var(--color-charcoal-muted)',
+              textDecoration: 'none',
+              padding: '5px 10px',
+              borderRadius: 'var(--radius-sm)',
+              transition: 'color var(--transition-fast), background-color var(--transition-fast)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--color-primary)';
+              e.currentTarget.style.backgroundColor = 'var(--color-sage)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--color-charcoal-muted)';
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            <ArrowLeft size={14} aria-hidden="true" />
+            <span>Back to Homepage</span>
+          </Link>
+
           <span
             style={{
               display: 'inline-flex',

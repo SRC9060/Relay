@@ -12,22 +12,22 @@ export function AuthProvider({ children }) {
         demoRole === 'client'
           ? {
               id: 'user_client_01',
-              name: 'Marcus Vance',
-              email: 'marcus.vance@vancetech.io',
+              name: 'Arjun Mehta',
+              email: 'arjun.mehta@mehtaventures.in',
               role: 'client',
               title: 'Founder & Managing Partner',
-              avatar: 'MV',
-              assistantName: 'Elena Rostova',
+              avatar: 'AM',
+              assistantName: 'Ananya Sharma',
               assistantId: 'user_assistant_01'
             }
           : {
               id: 'user_assistant_01',
-              name: 'Elena Rostova',
-              email: 'elena.rostova@relay-assistant.io',
+              name: 'Ananya Sharma',
+              email: 'ananya.sharma@relay-assistant.in',
               role: 'assistant',
               title: 'Senior Executive Assistant',
-              avatar: 'ER',
-              clientName: 'Marcus Vance',
+              avatar: 'AS',
+              clientName: 'Arjun Mehta',
               clientId: 'user_client_01'
             };
       localStorage.setItem('relay_auth_user', JSON.stringify(demoUser));

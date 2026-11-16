@@ -112,7 +112,7 @@ export default function ConversationActionBar({ conversation, onNavigate }) {
               alignItems: 'center',
               gap: '4px'
             }}
-            title={conversation.handledBy === 'client' ? 'Handled by client Marcus Vance' : 'Action marked complete'}
+            title={conversation.handledBy === 'client' ? 'Handled by client Arjun Mehta' : 'Action marked complete'}
           >
             <CheckCircle2 size={13} color="var(--color-success)" />
             <span>{conversation.handledBy === 'client' ? 'Handled by Client' : 'Completed'}</span>

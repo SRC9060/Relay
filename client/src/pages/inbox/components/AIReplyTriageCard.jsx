@@ -228,7 +228,7 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
           <div>
             <strong>
               {conversation.handledBy === 'client' || conversation.responsibility === 'client'
-                ? 'Action Completed by Marcus Vance (Client)'
+                ? 'Action Completed by Arjun Mehta (Client)'
                 : 'Action Completed'}
             </strong>
             <span style={{ marginLeft: '6px', color: 'var(--color-charcoal-muted)', fontSize: '11px', fontWeight: 400 }}>

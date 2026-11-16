@@ -301,9 +301,9 @@ test('Responsibility filters return exact dataset matching visible counts (All: 
 test('Search operates accurately within active responsibility filter without leaking unrelated threads', async () => {
   const { api } = await import('../src/services/api.js');
 
-  // Search inside assistant_reply for Lufthansa
-  const asstSearch = await api.getConversations({ segment: 'assistant_reply', q: 'Lufthansa' });
-  assert.equal(asstSearch.data.length, 1, 'Should find 1 Lufthansa thread in assistant_reply');
+  // Search inside assistant_reply for Club One Air
+  const asstSearch = await api.getConversations({ segment: 'assistant_reply', q: 'Club One Air' });
+  assert.equal(asstSearch.data.length, 1, 'Should find 1 Club One Air thread in assistant_reply');
   assert.equal(asstSearch.data[0].id, 'conv_18');
   assert.equal(asstSearch.data[0].responsibility, 'assistant');
 
@@ -387,7 +387,7 @@ test('ConversationListItem and AIReplyTriageCard display Handled by Client statu
   assert.ok(itemCode.includes('<CheckCircle2'), 'ConversationListItem displays CheckCircle2 for completed');
 
   const cardCode = fs.readFileSync(path.resolve('./src/pages/inbox/components/AIReplyTriageCard.jsx'), 'utf-8');
-  assert.ok(cardCode.includes('Action Completed by Marcus Vance (Client)'), 'AIReplyTriageCard displays Action Completed by Marcus Vance');
+  assert.ok(cardCode.includes('Action Completed by Arjun Mehta (Client)'), 'AIReplyTriageCard displays Action Completed by Arjun Mehta');
   assert.ok(cardCode.includes('Historical responsibility retained'), 'AIReplyTriageCard explains historical audit trail');
 });
 
@@ -409,4 +409,23 @@ test('API service markHandled completes conversation, sets handledBy client, and
   assert.equal(res.data.handledBy, 'client', 'HandledBy is marked as client');
   assert.equal(res.data.responsibility, 'client', 'Original client responsibility classification is preserved');
   assert.ok(res.counts.clientQueue < 5, 'Client queue count decrements');
+});
+
+test('Navigation links and CTA polish invariants are verified', () => {
+  const authLayoutCode = fs.readFileSync(path.resolve('./src/layouts/AuthLayout.jsx'), 'utf-8');
+  assert.ok(authLayoutCode.includes('Back to Homepage'), 'AuthLayout contains Back to Homepage link');
+  assert.ok(authLayoutCode.includes('ArrowLeft'), 'AuthLayout uses ArrowLeft icon for Back to Homepage');
+
+  const sidebarCode = fs.readFileSync(path.resolve('./src/components/navigation/Sidebar.jsx'), 'utf-8');
+  assert.ok(sidebarCode.includes("label: 'Website Home'"), 'Sidebar contains Website Home navigation link');
+  assert.ok(sidebarCode.includes("path: '/'"), 'Sidebar Website Home routes to /');
+
+  const clientTopBarCode = fs.readFileSync(path.resolve('./src/pages/client/components/ClientTopBar.jsx'), 'utf-8');
+  assert.ok(clientTopBarCode.includes('Website Home'), 'ClientTopBar contains Website Home button');
+
+  const homePageCode = fs.readFileSync(path.resolve('./src/pages/public/HomePage.jsx'), 'utf-8');
+  assert.ok(homePageCode.includes('icon={ArrowRight}'), 'HomePage header CTA uses ArrowRight icon');
+  // Check footer CTA does not use Sparkles icon
+  const footerCtaSection = homePageCode.slice(homePageCode.indexOf('Experience Relay\'s dual-workspace architecture'));
+  assert.ok(!footerCtaSection.includes('icon={Sparkles}'), 'Footer Explore Live Demo button does not have star/Sparkles icon');
 });

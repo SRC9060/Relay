@@ -21,7 +21,7 @@ class ClassificationService {
     }).join('\n\n');
 
     return `
-Analyze the following executive email thread for an executive assistant (Elena Rostova) managing communications for client (Marcus Vance):
+Analyze the following executive email thread for an executive assistant (Ananya Sharma) managing communications for client (Arjun Mehta):
 
 THREAD CONTEXT:
 - Subject: ${conversation.subject || 'No Subject'}
@@ -36,7 +36,7 @@ ${messages}
 INSTRUCTIONS:
 Determine reply responsibility strictly according to the executive delegation protocol:
 1. "assistant": Routine administration, flight/hotel logistics, travel itineraries, dining reservations, appointment scheduling/rescheduling, general coordination, and counterparty follow-ups.
-2. "client": Personal legal approvals, written consents, statutory signatures, investment decisions, sensitive partnership negotiations, equity allocations, and matters requiring Marcus Vance's individual executive judgment.
+2. "client": Personal legal approvals, written consents, statutory signatures, investment decisions, sensitive partnership negotiations, equity allocations, and matters requiring Arjun Mehta's individual executive judgment.
 3. "none": Informational newsletters, automated digests, system notices, payment receipts, or conversations where matters are already resolved and no reply is warranted.
 
 Needs Review Protocol:
@@ -98,7 +98,7 @@ Respond with ONLY a valid JSON object matching:
           'Awaiting assistant confirmation of responsibility'
         ],
         identifiedDates: [],
-        suggestedFollowUp: 'Assistant to review conversation scope with Marcus Vance before drafting response.'
+        suggestedFollowUp: 'Assistant to review conversation scope with Arjun Mehta before drafting response.'
       };
     }
 
@@ -116,11 +116,14 @@ Respond with ONLY a valid JSON object matching:
       text.includes('wire authorization') ||
       text.includes('audit sign-off') ||
       text.includes('kpmg') ||
+      text.includes('cyril amarchand') ||
+      text.includes('shardul amarchand') ||
+      text.includes('singhania') ||
       text.includes('partner cap')
     ) {
       const dates = [];
       if (text.includes('5:00 pm') || text.includes('today')) {
-        dates.push({ date: 'Today, 5:00 PM EST', description: 'Execution agreement signature deadline', isMeeting: false });
+        dates.push({ date: 'Today, 5:00 PM IST', description: 'Execution agreement signature deadline', isMeeting: false });
       }
       if (text.includes('thursday') || text.includes('briefing')) {
         dates.push({ date: 'Thursday (proposed)', description: 'Private briefing on syndicate terms', isMeeting: true });
@@ -130,10 +133,10 @@ Respond with ONLY a valid JSON object matching:
         responsibility: 'client',
         confidenceScore: 0.98,
         needsReview: false,
-        explanation: 'Formal corporate governance or financial agreement requiring statutory execution and personal signature from Marcus Vance.',
+        explanation: 'Formal corporate governance or financial agreement requiring statutory execution and personal signature from Arjun Mehta.',
         summary: `High-priority executive correspondence regarding "${conversation.subject}". Requires direct client review and formal sign-off.`,
         requiresAction: true,
-        clientAttentionReason: 'Direct sign-off or strategic decision required from Marcus Vance.',
+        clientAttentionReason: 'Direct sign-off or strategic decision required from Arjun Mehta.',
         suggestedCategory: 'approvals',
         importantInformation: [
           'Legal or financial counsel documentation attached',
@@ -141,7 +144,7 @@ Respond with ONLY a valid JSON object matching:
           'Statutory partner consent required'
         ],
         identifiedDates: dates,
-        suggestedFollowUp: 'Queue for Marcus Vance in the Client Attention Queue for review and signature.'
+        suggestedFollowUp: 'Queue for Arjun Mehta in the Client Attention Queue for review and signature.'
       };
     }
 
@@ -150,33 +153,35 @@ Respond with ONLY a valid JSON object matching:
       text.includes('charter') ||
       text.includes('flight') ||
       text.includes('private jet') ||
+      text.includes('falcon 2000') ||
       text.includes('phenom 300') ||
       text.includes('hotel') ||
       text.includes('suite') ||
       text.includes('dining') ||
       text.includes('sommelier') ||
+      text.includes('taj mahal palace') ||
+      text.includes('leela palace') ||
       text.includes('catering') ||
       text.includes('rsvp') ||
       text.includes('schedule') ||
       text.includes('reschedule') ||
       text.includes('transfer') ||
-      text.includes('connaught') ||
-      text.includes('london technology summit') ||
+      text.includes('bengaluru tech summit') ||
       text.includes('preferred hotel arrival')
     ) {
       const dates = [];
       if (text.includes('wednesday') || text.includes('nov 18')) {
-        dates.push({ date: 'Wednesday, Nov 18', description: 'Flight Zurich (ZRH) to London (LCY)', isMeeting: true });
+        dates.push({ date: 'Wednesday, Nov 18', description: 'Flight Mumbai (BOM) to New Delhi (DEL)', isMeeting: true });
       }
       if (text.includes('thursday')) {
-        dates.push({ date: 'Thursday evening', description: 'Private dining (8 guests) at Sommelier Room', isMeeting: true });
+        dates.push({ date: 'Thursday evening', description: 'Private dining (8 guests) at Sea Lounge Private Suite', isMeeting: true });
       }
 
       return {
         responsibility: 'assistant',
         confidenceScore: 0.94,
         needsReview: false,
-        explanation: 'Operational coordination, scheduling, and travel arrangement delegated to Executive Assistant Elena Rostova.',
+        explanation: 'Operational coordination, scheduling, and travel arrangement delegated to Executive Assistant Ananya Sharma.',
         summary: `Administrative logistics regarding "${conversation.subject}". Action items include itinerary confirmation, slot booking, and attendee coordination.`,
         requiresAction: true,
         clientAttentionReason: null,
@@ -186,7 +191,7 @@ Respond with ONLY a valid JSON object matching:
           'Assistant delegated to confirm arrangements and dietary requirements'
         ],
         identifiedDates: dates,
-        suggestedFollowUp: 'Elena Rostova to reply with confirmation details and coordinate calendar holds.'
+        suggestedFollowUp: 'Ananya Sharma to reply with confirmation details and coordinate calendar holds.'
       };
     }
 

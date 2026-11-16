@@ -543,10 +543,10 @@ class StorageService {
     let isUrgent = false;
 
     if (conv.responsibility === 'assistant') {
-      defaultBody = `Hi Elena,\n\nFollowing up on our earlier note: we have now received authorization for the booking. Could Mr. Vance personally confirm whether he requires formal execution sign-off on the Master Services Annex before departure?`;
+      defaultBody = `Hi Ananya,\n\nFollowing up on our earlier note: we have now received authorization for the booking. Could Mr. Mehta personally confirm whether he requires formal execution sign-off on the Master Services Annex before departure?`;
       isUrgent = true;
     } else if (conv.responsibility === 'client') {
-      defaultBody = `Marcus — Latham & Watkins has clarified Section 4. If you prefer, Elena can sign the operational appendix on your behalf if you authorize her via email. Let us know your decision.`;
+      defaultBody = `Arjun — Shardul Amarchand Mangaldas has clarified Section 4. If you prefer, Ananya can sign the operational appendix on your behalf if you authorize her via email. Let us know your decision.`;
     } else {
       defaultBody = `Update: An important operational deadline has been set for this thread. Please acknowledge receipt.`;
       isUrgent = true;
@@ -626,8 +626,8 @@ class StorageService {
         const newMsg = {
           id: `msg_reply_${Date.now()}`,
           sender: {
-            name: 'Elena Rostova (on behalf of Marcus Vance)',
-            email: 'elena.rostova@relay-assistant.io'
+            name: 'Ananya Sharma (on behalf of Arjun Mehta)',
+            email: 'ananya.sharma@relay-assistant.in'
           },
           timestamp: new Date().toISOString(),
           body: conv.draft.body
@@ -649,8 +649,8 @@ class StorageService {
       const newMsg = {
         id: `msg_reply_${Date.now()}`,
         sender: {
-          name: 'Elena Rostova (on behalf of Marcus Vance)',
-          email: 'elena.rostova@relay-assistant.io'
+          name: 'Ananya Sharma (on behalf of Arjun Mehta)',
+          email: 'ananya.sharma@relay-assistant.in'
         },
         timestamp: new Date().toISOString(),
         body: conv.draft.body
@@ -732,7 +732,7 @@ class StorageService {
       confidenceScore: 1.0,
       pendingSuggestion: null,
       needsReview: false,
-      aiReasoning: notes || 'Delegated to executive assistant Elena Rostova by client Marcus Vance.'
+      aiReasoning: notes || 'Delegated to executive assistant Ananya Sharma by client Arjun Mehta.'
     };
 
     if (this.isDbReady()) {

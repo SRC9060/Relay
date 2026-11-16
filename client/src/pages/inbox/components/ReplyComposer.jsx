@@ -103,7 +103,7 @@ export default function ReplyComposer({ conversation }) {
             Reply
           </span>
           <span style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>
-            from Elena Rostova (on behalf of Marcus Vance)
+            from Ananya Sharma (on behalf of Arjun Mehta)
           </span>
         </div>
 

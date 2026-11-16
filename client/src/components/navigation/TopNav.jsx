@@ -10,6 +10,7 @@ import {
   LogOut,
   User,
   Shield,
+  Globe,
   Menu
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -420,7 +421,7 @@ export default function TopNav({ onToggleMobileMenu }) {
           onClick={() => {
             navigate('/client');
           }}
-          title="Open Marcus Vance's client attention queue"
+          title="Open Arjun Mehta's client attention queue"
         >
           Client View
         </Button>
@@ -455,11 +456,11 @@ export default function TopNav({ onToggleMobileMenu }) {
                 justifyContent: 'center'
               }}
             >
-              {user?.avatar || 'EA'}
+              {user?.avatar || 'AS'}
             </div>
             <div style={{ textAlign: 'left' }} className="desktop-only">
               <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-charcoal)' }}>
-                {user?.name || 'Elena Rostova'}
+                {user?.name || 'Ananya Sharma'}
               </div>
             </div>
             <ChevronDown size={13} color="var(--color-charcoal-muted)" />
@@ -525,7 +526,7 @@ export default function TopNav({ onToggleMobileMenu }) {
                       textAlign: 'left'
                     }}
                   >
-                    <Shield size={14} /> Elena Rostova (Assistant)
+                    <Shield size={14} /> Ananya Sharma (Assistant)
                   </button>
                   <button
                     onClick={async () => {
@@ -546,11 +547,31 @@ export default function TopNav({ onToggleMobileMenu }) {
                       textAlign: 'left'
                     }}
                   >
-                    <User size={14} /> Marcus Vance (Client)
+                    <User size={14} /> Arjun Mehta (Client)
                   </button>
                 </div>
 
-                <div style={{ borderTop: 'var(--border-subtle)', paddingTop: '6px' }}>
+                <div style={{ borderTop: 'var(--border-subtle)', paddingTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      navigate('/');
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '6px 10px',
+                      fontSize: '12px',
+                      color: 'var(--color-charcoal)',
+                      borderRadius: 'var(--radius-sm)',
+                      textAlign: 'left',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Globe size={14} color="var(--color-primary)" /> Website Home
+                  </button>
                   <button
                     onClick={() => {
                       setShowProfileMenu(false);
@@ -565,7 +586,8 @@ export default function TopNav({ onToggleMobileMenu }) {
                       fontSize: '12px',
                       color: 'var(--color-danger)',
                       borderRadius: 'var(--radius-sm)',
-                      textAlign: 'left'
+                      textAlign: 'left',
+                      cursor: 'pointer'
                     }}
                   >
                     <LogOut size={14} /> Sign Out

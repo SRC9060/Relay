@@ -21,22 +21,22 @@ const API_BASE = getApiBase();
 const LOCAL_DEMO_USERS = [
   {
     id: 'user_assistant_01',
-    name: 'Elena Rostova',
-    email: 'elena.rostova@relay-assistant.io',
+    name: 'Ananya Sharma',
+    email: 'ananya.sharma@relay-assistant.in',
     role: 'assistant',
     title: 'Senior Executive Assistant',
-    avatar: 'ER',
-    clientName: 'Marcus Vance',
+    avatar: 'AS',
+    clientName: 'Arjun Mehta',
     clientId: 'user_client_01'
   },
   {
     id: 'user_client_01',
-    name: 'Marcus Vance',
-    email: 'marcus.vance@vancetech.io',
+    name: 'Arjun Mehta',
+    email: 'arjun.mehta@mehtaventures.in',
     role: 'client',
     title: 'Founder & Managing Partner',
-    avatar: 'MV',
-    assistantName: 'Elena Rostova',
+    avatar: 'AM',
+    assistantName: 'Ananya Sharma',
     assistantId: 'user_assistant_01'
   }
 ];
@@ -59,8 +59,8 @@ function getLocalAccounts() {
     {
       id: 'acc_gmail_01',
       provider: 'gmail',
-      name: 'Vance Tech Work Gmail',
-      emailAddress: 'marcus.vance@vancetech.io',
+      name: 'Mehta Ventures Work Gmail',
+      emailAddress: 'arjun.mehta@mehtaventures.in',
       connectionStatus: 'connected',
       isSimulated: true,
       lastSyncedAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
@@ -71,7 +71,7 @@ function getLocalAccounts() {
       id: 'acc_outlook_01',
       provider: 'outlook',
       name: 'Advisory Board Outlook',
-      emailAddress: 'm.vance@board-advisory.com',
+      emailAddress: 'arjun.mehta@board-advisory.in',
       connectionStatus: 'connected',
       isSimulated: true,
       lastSyncedAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
@@ -442,7 +442,7 @@ export const api = {
       if (conv && conv.draft && conv.draft.body) {
         const newMsg = {
           id: `msg_reply_${Date.now()}`,
-          sender: { name: 'Elena Rostova (on behalf of Marcus Vance)', email: 'elena.rostova@relay-assistant.io' },
+          sender: { name: 'Ananya Sharma (on behalf of Arjun Mehta)', email: 'ananya.sharma@relay-assistant.in' },
           timestamp: new Date().toISOString(),
           body: conv.draft.body
         };
@@ -541,7 +541,7 @@ export const api = {
         conv.confidenceScore = 1.0;
         conv.pendingSuggestion = null;
         conv.needsReview = false;
-        conv.aiReasoning = notes || 'Delegated to executive assistant Elena Rostova by client Marcus Vance.';
+        conv.aiReasoning = notes || 'Delegated to executive assistant Ananya Sharma by client Arjun Mehta.';
         saveLocalConversations(all);
       }
       const counts = computeLocalCounts(all);
@@ -663,7 +663,7 @@ export const api = {
       const senderName = conv.sender?.name?.split(' ')[0] || 'Sir/Madam';
       return {
         subject: `Re: ${conv.subject || 'Correspondence'}`,
-        body: `Dear ${senderName},\n\nThank you for your correspondence regarding "${conv.subject}".\n\nI have confirmed the details with Mr. Vance and we are pleased to proceed on this basis.\n\nWarm regards,\nElena Rostova\nExecutive Assistant to Marcus Vance`,
+        body: `Dear ${senderName},\n\nThank you for your correspondence regarding "${conv.subject}".\n\nI have confirmed the details with Mr. Mehta and we are pleased to proceed on this basis.\n\nWarm regards,\nAnanya Sharma\nExecutive Assistant to Arjun Mehta`,
         intentApplied: intent,
         tone: 'Executive Professional',
         keyPointsAddressed: ['Acknowledged message', 'Approved next steps on behalf of client'],
@@ -691,7 +691,7 @@ export const api = {
           id: `msg_incoming_${Date.now()}`,
           sender: { name: conv.sender?.name || 'Counterparty', email: conv.sender?.email || 'external@partner.com' },
           timestamp: new Date().toISOString(),
-          body: messageData.body || 'Hi Elena, could Mr. Vance personally confirm the attached schedule before noon tomorrow?'
+          body: messageData.body || 'Hi Ananya, could Mr. Mehta personally confirm the attached schedule before noon tomorrow?'
         };
         conv.messages.push(newMsg);
         conv.lastMessageAt = newMsg.timestamp;
@@ -753,7 +753,7 @@ export const api = {
       const all = getLocalConversations();
       const matches = all.filter((c) => !c.isArchived && c.actionStatus === 'action_required');
       return {
-        answer: `You currently have ${matches.length} conversations requiring attention across Marcus Vance's accounts.`,
+        answer: `You currently have ${matches.length} conversations requiring attention across Arjun Mehta's accounts.`,
         referencedConversations: matches.slice(0, 4).map((c) => ({
           id: c.id,
           subject: c.subject,

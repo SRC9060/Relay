@@ -65,10 +65,10 @@ class CopilotService {
     }
 
     // 3. "Which emails require the client's attention?"
-    if (q.includes('client attention') || q.includes('client') || q.includes('marcus') || q.includes("client's attention")) {
+    if (q.includes('client attention') || q.includes('client') || q.includes('arjun') || q.includes('marcus') || q.includes("client's attention")) {
       const matches = all.filter((c) => !c.isArchived && c.responsibility === 'client');
       return {
-        answer: `There are ${matches.length} executive conversations requiring Marcus Vance's personal review, statutory approval, or strategic decision. These are prioritized in the Client Queue.`,
+        answer: `There are ${matches.length} executive conversations requiring Arjun Mehta's personal review, statutory approval, or strategic decision. These are prioritized in the Client Queue.`,
         referencedConversations: matches.slice(0, 5).map(this.formatRef),
         queryType: 'list',
         segment: 'client-reply',
@@ -127,7 +127,7 @@ class CopilotService {
       const isClient = conv.responsibility === 'client';
       const reason = conv.aiReasoning || 'Assigned based on delegated authority rules.';
       const answer = isClient
-        ? `"${conv.subject}" is assigned to **Client to Reply** because it contains: ${reason}\n\nMarcus Vance's individual executive signature or judgment is required under your operating protocols.`
+        ? `"${conv.subject}" is assigned to **Client to Reply** because it contains: ${reason}\n\nArjun Mehta's individual executive signature or judgment is required under your operating protocols.`
         : `"${conv.subject}" is assigned to **${conv.responsibility === 'assistant' ? 'Assistant to Reply' : 'No Reply Needed'}** because: ${reason}`;
 
       return {
@@ -177,14 +177,14 @@ Current Mailbox Status:
 Selected Conversation Context (if any):
 ${targetConversation ? `Subject: ${targetConversation.subject}\nFrom: ${targetConversation.sender?.name}\nResponsibility: ${targetConversation.responsibility}\nPreview: ${targetConversation.preview}` : 'No single conversation currently selected.'}
 
-Provide a concise, helpful, grounded answer for Elena Rostova.
+Provide a concise, helpful, grounded answer for Ananya Sharma.
 `.trim();
 
     const result = await geminiService.generateJson({
       systemInstruction,
       prompt,
       fallbackFn: () => ({
-        answer: `Marcus Vance's connected mailboxes contain ${counts.all} active emails. Currently, ${counts.actionRequired} require action (${counts.assistantReply} for the assistant and ${counts.clientReply} for the client). ${counts.waiting} are waiting for counterparty responses.`,
+        answer: `Arjun Mehta's connected mailboxes contain ${counts.all} active emails. Currently, ${counts.actionRequired} require action (${counts.assistantReply} for the assistant and ${counts.clientReply} for the client). ${counts.waiting} are waiting for counterparty responses.`,
         referencedConversations: all.slice(0, 3).map(this.formatRef),
         queryType: 'general'
       })

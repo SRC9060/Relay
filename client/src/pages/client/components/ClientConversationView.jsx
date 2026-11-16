@@ -53,7 +53,7 @@ export default function ClientConversationView({
           Select a conversation
         </h3>
         <p style={{ fontSize: '12.5px', maxWidth: '340px' }}>
-          Choose an item from your attention queue to review details, approve, or delegate to Elena.
+          Choose an item from your attention queue to review details, approve, or delegate to Ananya.
         </p>
       </div>
     );
@@ -218,7 +218,7 @@ export default function ClientConversationView({
               </div>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-resp-client-dark)', marginBottom: '2px' }}>
-                  Action Required from Marcus Vance
+                  Action Required from Arjun Mehta
                 </div>
                 <div style={{ fontSize: '12.5px', color: 'var(--color-charcoal)', lineHeight: 1.45 }}>
                   <span style={{ fontWeight: 600, color: 'var(--color-resp-client-dark)' }}>Why your input is required: </span>
@@ -256,7 +256,7 @@ export default function ClientConversationView({
                   color: 'var(--color-primary)',
                   fontWeight: 600
                 }}
-                title="Hand off this correspondence to Elena Rostova with priority"
+                title="Hand off this correspondence to Ananya Sharma with priority"
               >
                 Ask Assistant to Take Over
               </Button>
@@ -377,11 +377,14 @@ export default function ClientConversationView({
           </div>
 
           {messages.map((msg, index) => {
-            const isElena =
+            const isAssistant =
               msg.sender?.email?.includes('relay-assistant') ||
+              msg.sender?.name?.toLowerCase().includes('ananya') ||
               msg.sender?.name?.toLowerCase().includes('elena');
-            const isMarcus =
+            const isClient =
+              msg.sender?.email?.includes('mehtaventures') ||
               msg.sender?.email?.includes('vancetech') ||
+              msg.sender?.name?.toLowerCase().includes('arjun') ||
               msg.sender?.name?.toLowerCase().includes('marcus');
 
             return (
@@ -389,9 +392,9 @@ export default function ClientConversationView({
                 key={msg.id || index}
                 style={{
                   padding: '18px 20px',
-                  backgroundColor: isElena ? '#F5F8F6' : 'var(--color-surface)',
+                  backgroundColor: isAssistant ? '#F5F8F6' : 'var(--color-surface)',
                   borderRadius: 'var(--radius-lg)',
-                  border: isElena
+                  border: isAssistant
                     ? '1.5px solid var(--color-resp-assistant-border)'
                     : 'var(--border-subtle)',
                   boxShadow: 'var(--shadow-subtle)',
@@ -408,14 +411,14 @@ export default function ClientConversationView({
                         width: '28px',
                         height: '28px',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: isElena
+                        backgroundColor: isAssistant
                           ? 'var(--color-resp-assistant-bg)'
-                          : isMarcus
+                          : isClient
                           ? 'var(--color-resp-client-bg)'
                           : 'var(--color-surface-subtle)',
-                        color: isElena
+                        color: isAssistant
                           ? 'var(--color-primary)'
-                          : isMarcus
+                          : isClient
                           ? 'var(--color-resp-client)'
                           : 'var(--color-charcoal)',
                         fontSize: '11px',
@@ -426,12 +429,12 @@ export default function ClientConversationView({
                         border: 'var(--border-subtle)'
                       }}
                     >
-                      {msg.sender?.name?.slice(0, 2).toUpperCase() || 'ER'}
+                      {msg.sender?.name?.slice(0, 2).toUpperCase() || 'EA'}
                     </div>
                     <div>
                       <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-charcoal)' }}>
                         {msg.sender?.name}
-                        {isElena && (
+                        {isAssistant && (
                           <span
                             style={{
                               marginLeft: '6px',
@@ -444,6 +447,21 @@ export default function ClientConversationView({
                             }}
                           >
                             Executive Assistant
+                          </span>
+                        )}
+                        {isClient && (
+                          <span
+                            style={{
+                              marginLeft: '6px',
+                              fontSize: '10px',
+                              fontWeight: 600,
+                              padding: '2px 6px',
+                              borderRadius: 'var(--radius-xs)',
+                              backgroundColor: 'var(--color-resp-client-bg)',
+                              color: 'var(--color-resp-client)'
+                            }}
+                          >
+                            Client
                           </span>
                         )}
                       </div>

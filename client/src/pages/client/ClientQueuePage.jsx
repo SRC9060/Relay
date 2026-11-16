@@ -254,7 +254,7 @@ export default function ClientQueuePage() {
                   fontFamily: 'var(--font-heading)'
                 }}
               >
-                {greeting}, {user?.role === 'client' ? (user?.name?.split(' ')[0] || 'Marcus') : (user?.clientName?.split(' ')[0] || 'Marcus')}
+                {greeting}, {user?.role === 'client' ? (user?.name?.split(' ')[0] || 'Arjun') : (user?.clientName?.split(' ')[0] || 'Arjun')}
               </h1>
               <span
                 style={{
@@ -389,7 +389,7 @@ export default function ClientQueuePage() {
                   Queue Clear
                 </h3>
                 <p style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)', maxWidth: '260px', lineHeight: 1.45 }}>
-                  No outstanding client responses required. Elena Rostova is actively managing all routine operational correspondence.
+                  No outstanding client responses required. Ananya Sharma is actively managing all routine operational correspondence.
                 </p>
               </div>
             ) : (
@@ -419,7 +419,7 @@ export default function ClientQueuePage() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Shield size={12} color="var(--color-primary)" />
-              <span>Executive Assistant: Elena Rostova</span>
+              <span>Executive Assistant: Ananya Sharma</span>
             </div>
             <span style={{ fontWeight: 600 }}>{counts.assistantReply || 12} Delegated</span>
           </div>

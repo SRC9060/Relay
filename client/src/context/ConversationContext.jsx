@@ -453,7 +453,7 @@ export function ConversationProvider({ children }) {
       const res = await api.delegateToAssistant(id, notes);
       notifyConversationChange();
       if (res && res.counts) setCounts(res.counts);
-      showToast('Delegated to assistant Elena Rostova with priority.');
+      showToast('Delegated to assistant Ananya Sharma with priority.');
       return res;
     } catch (err) {
       console.error('Failed to delegate to assistant:', err);

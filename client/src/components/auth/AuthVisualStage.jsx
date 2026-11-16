@@ -114,7 +114,7 @@ export default function AuthVisualStage() {
           </div>
         </motion.div>
 
-        {/* Card 1: Client Attention Card (Marcus Vance) */}
+        {/* Card 1: Client Attention Card (Arjun Mehta) */}
         <motion.div
           style={{
             transform: 'translateZ(26px)',
@@ -170,7 +170,7 @@ export default function AuthVisualStage() {
               Board Resolution: Series B Written Consent
             </div>
             <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)', marginTop: '2px' }}>
-              David Sterling (Chairman) → Marcus Vance
+              Vikram Singhania (Chairman) → Arjun Mehta
             </div>
           </div>
 
@@ -190,7 +190,7 @@ export default function AuthVisualStage() {
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '4px' }}>
             <span style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }}>
-              Action: Marcus 1-Click Handled
+              Action: Arjun 1-Click Handled
             </span>
             <span style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-resp-client)' }}>
               Ready for Decision →
@@ -198,7 +198,7 @@ export default function AuthVisualStage() {
           </div>
         </motion.div>
 
-        {/* Card 2: Assistant Workspace Triage & Copilot (Elena Rostova) */}
+        {/* Card 2: Assistant Workspace Triage & Copilot (Ananya Sharma) */}
         <motion.div
           style={{
             transform: 'translateZ(14px)',
@@ -250,10 +250,10 @@ export default function AuthVisualStage() {
 
           <div>
             <div style={{ fontSize: '14.5px', fontWeight: 700, color: 'var(--color-charcoal)' }}>
-              London Technology Summit: Suite & Transfers
+              Bengaluru Tech Summit: Suite & Transfers
             </div>
             <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)', marginTop: '2px' }}>
-              Clara Hayes &lt;clara.hayes@summits-london.org&gt;
+              Pooja Kulkarni &lt;pooja.kulkarni@techsummit-blr.in&gt;
             </div>
           </div>
 
@@ -268,7 +268,7 @@ export default function AuthVisualStage() {
               lineHeight: 1.5
             }}
           >
-            <strong style={{ fontWeight: 600 }}>Copilot Draft:</strong> VIP transfer schedule & dietary preferences drafted for Elena's verification.
+            <strong style={{ fontWeight: 600 }}>Copilot Draft:</strong> VIP transfer schedule & dietary preferences drafted for Ananya's verification.
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '4px' }}>

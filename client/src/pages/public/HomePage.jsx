@@ -270,7 +270,7 @@ export default function HomePage() {
               <Button
                 variant="primary"
                 size="sm"
-                icon={Sparkles}
+                icon={ArrowRight}
                 iconPosition="right"
                 onClick={() => setShowDemoModal(true)}
                 title="Explore demo"
@@ -316,7 +316,7 @@ export default function HomePage() {
           }}
         >
           <ShieldCheck size={14} color="var(--color-primary)" />
-          Assistant & Client Email Workflow • Elena (Assistant) & Marcus (Client)
+          Assistant & Client Email Workflow • Ananya (Assistant) & Arjun (Client)
         </div>
 
         {/* Main Headline */}
@@ -477,7 +477,7 @@ export default function HomePage() {
                     color: 'var(--color-primary)'
                   }}
                 >
-                  Elena (Assistant) • Marcus (Client)
+                  Ananya (Assistant) • Arjun (Client)
                 </span>
                 <span
                   style={{
@@ -554,7 +554,7 @@ export default function HomePage() {
                     Board Resolution: Series B Written Consent
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)', marginTop: '2px' }}>
-                    David Sterling &lt;d.sterling@sterling-ventures.com&gt; • Board Chairman
+                    Vikram Singhania &lt;vikram.singhania@singhania-ventures.in&gt; • Board Chairman
                   </div>
                 </div>
 
@@ -569,7 +569,7 @@ export default function HomePage() {
                     lineHeight: 1.5
                   }}
                 >
-                  <strong style={{ fontWeight: 700 }}>AI Reasoning:</strong> Formal corporate governance action requiring statutory written consent and managing partner signature from Marcus Vance.
+                  <strong style={{ fontWeight: 700 }}>AI Reasoning:</strong> Formal corporate governance action requiring statutory written consent and managing partner signature from Arjun Mehta.
                 </div>
 
                 <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '8px' }}>
@@ -577,7 +577,7 @@ export default function HomePage() {
                     2 turns • 2 hours ago
                   </span>
                   <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-resp-client)' }}>
-                    Queued in Marcus's Decision Desk →
+                    Queued in Arjun's Decision Desk →
                   </span>
                 </div>
               </motion.div>
@@ -630,10 +630,10 @@ export default function HomePage() {
 
                 <div>
                   <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-charcoal)', lineHeight: 1.3 }}>
-                    London Technology Summit: Suite & Transfers
+                    Bengaluru Tech Summit: Suite & Transfers
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)', marginTop: '2px' }}>
-                    Clara Hayes &lt;clara.hayes@summits-london.org&gt; • Summit Coordinator
+                    Pooja Kulkarni &lt;pooja.kulkarni@techsummit-blr.in&gt; • Summit Coordinator
                   </div>
                 </div>
 
@@ -656,7 +656,7 @@ export default function HomePage() {
                     1 turn • 4 hours ago
                   </span>
                   <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-primary)' }}>
-                    Draft Prepared for Elena's Review →
+                    Draft Prepared for Ananya's Review →
                   </span>
                 </div>
               </motion.div>
@@ -709,10 +709,10 @@ export default function HomePage() {
 
                 <div>
                   <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-charcoal)', lineHeight: 1.3 }}>
-                    Bloomberg Markets: European VC & Sovereign Flows
+                    The Ken Executive Brief: India DeepTech & Autonomous AI Infrastructure
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)', marginTop: '2px' }}>
-                    Bloomberg Briefs &lt;briefs@bloomberg.net&gt; • Market Dispatch
+                    The Ken Executive Brief &lt;briefs@theken-dispatch.in&gt; • Market Dispatch
                   </div>
                 </div>
 
@@ -1051,7 +1051,7 @@ export default function HomePage() {
               lineHeight: 1.5
             }}
           >
-            Elena (Assistant) manages correspondence volume and logistics. Marcus (Client) reviews only strategic decisions requiring personal authority.
+            Ananya (Assistant) manages correspondence volume and logistics. Arjun (Client) reviews only strategic decisions requiring personal authority.
           </p>
         </div>
 
@@ -1107,8 +1107,8 @@ export default function HomePage() {
                     <UserCheck size={18} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Personal Assistants: Elena</h3>
-                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Elena — Assistant</div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Personal Assistants: Ananya</h3>
+                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Ananya — Assistant</div>
                   </div>
                 </div>
 
@@ -1167,7 +1167,7 @@ export default function HomePage() {
                     onClick={() => handleLaunchDemo('assistant')}
                     style={{ width: '100%', justifyContent: 'center', minHeight: '44px' }}
                   >
-                    Launch Assistant Demo (Elena)
+                    Launch Assistant Demo (Ananya)
                   </Button>
                 </div>
               </>
@@ -1219,8 +1219,8 @@ export default function HomePage() {
                     <UserRound size={18} />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Busy Clients: Marcus</h3>
-                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Marcus — Client</div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 600 }}>For Busy Clients: Arjun</h3>
+                    <div style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>Demo Persona: Arjun — Client</div>
                   </div>
                 </div>
 
@@ -1285,7 +1285,7 @@ export default function HomePage() {
                       minHeight: '44px'
                     }}
                   >
-                    Launch Client Demo (Marcus)
+                    Launch Client Demo (Arjun)
                   </Button>
                 </div>
               </>
@@ -1392,8 +1392,6 @@ export default function HomePage() {
                 <Button
                   variant="primary"
                   size="lg"
-                  icon={Sparkles}
-                  iconPosition="right"
                   onClick={() => setShowDemoModal(true)}
                   style={{ minHeight: '44px', padding: '12px 28px', fontSize: '14.5px', fontWeight: 600 }}
                 >
@@ -1533,7 +1531,7 @@ export default function HomePage() {
                   className="footer-link"
                   style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
                 >
-                  Elena — Assistant View
+                  Ananya — Assistant View
                 </button>
                 <button
                   type="button"
@@ -1541,7 +1539,7 @@ export default function HomePage() {
                   className="footer-link"
                   style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
                 >
-                  Marcus — Client View
+                  Arjun — Client View
                 </button>
                 <Link to="/login" className="footer-link">Assistant Sign In</Link>
                 <Link to="/signup" className="footer-link">Create Workspace</Link>
@@ -1661,11 +1659,11 @@ export default function HomePage() {
                         justifyContent: 'center'
                       }}
                     >
-                      ER
+                      AS
                     </div>
                     <div>
                       <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-primary)' }}>
-                        Elena — Assistant
+                        Ananya — Assistant
                       </div>
                       <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)' }}>
                         Executive Assistant • Full triage inbox, AI drafting & overview
@@ -1709,11 +1707,11 @@ export default function HomePage() {
                         justifyContent: 'center'
                       }}
                     >
-                      MV
+                      AM
                     </div>
                     <div>
                       <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-resp-client)' }}>
-                        Marcus — Client
+                        Arjun — Client
                       </div>
                       <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)' }}>
                         Managing Partner • Executive decision queue, Mark Handled & delegation

@@ -189,7 +189,7 @@ export default function AccountsPage() {
 
           <Input
             label="Account display name"
-            placeholder="e.g. Marcus Personal Inquiries"
+            placeholder="e.g. Arjun Personal Inquiries"
             value={accountName}
             onChange={(e) => setAccountName(e.target.value)}
           />
@@ -197,7 +197,7 @@ export default function AccountsPage() {
           <Input
             label="Email address"
             type="email"
-            placeholder="e.g. inquiries@vance-advisory.com"
+            placeholder="e.g. inquiries@mehtaventures.in"
             value={emailAddress}
             onChange={(e) => setEmailAddress(e.target.value)}
             required

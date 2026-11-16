@@ -31,7 +31,7 @@ export default function AIAssistantPage() {
   const [messages, setMessages] = useState([
     {
       sender: 'assistant',
-      text: 'Good morning, Elena. I am your Relay Executive Copilot. I can query Marcus Vance’s connected mailboxes, summarize correspondence, identify deadlines, and draft contextual replies strictly grounded in your actual conversation history.',
+      text: 'Good morning, Ananya. I am your Relay Executive Copilot. I can query Arjun Mehta’s connected mailboxes, summarize correspondence, identify deadlines, and draft contextual replies strictly grounded in your actual conversation history.',
       referencedConversations: [],
       timestamp: 'Just now'
     }
@@ -99,7 +99,7 @@ export default function AIAssistantPage() {
     setMessages([
       {
         sender: 'assistant',
-        text: 'Session reset. What would you like to review across Marcus Vance’s communications?',
+        text: 'Session reset. What would you like to review across Arjun Mehta’s communications?',
         referencedConversations: [],
         timestamp: 'Just now'
       }
@@ -130,7 +130,7 @@ export default function AIAssistantPage() {
             </Badge>
           </div>
           <p style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>
-            Real-time intelligence across <strong>{conversations.length} conversations</strong> for Marcus Vance.
+            Real-time intelligence across <strong>{conversations.length} conversations</strong> for Arjun Mehta.
           </p>
         </div>
 
@@ -333,7 +333,7 @@ export default function AIAssistantPage() {
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSend();
           }}
-          placeholder="Ask a question about Marcus Vance's emails, approvals, meetings, or pending replies..."
+          placeholder="Ask a question about Arjun Mehta's emails, approvals, meetings, or pending replies..."
           style={{
             flex: 1,
             border: 'none',

@@ -9,7 +9,8 @@ import {
   Search,
   ExternalLink,
   SlidersHorizontal,
-  Mail
+  Mail,
+  Globe
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { useAccounts } from '../../../context/AccountContext';
@@ -117,7 +118,7 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
             Executive Decision Desk
           </span>
           <span style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)' }}>
-            Marcus Vance
+            Arjun Mehta
           </span>
         </div>
       </div>
@@ -240,6 +241,17 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
           <span className="tabular-nums">{getSyncText()}</span>
         </button>
 
+        {/* Website Home */}
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={Globe}
+          onClick={() => navigate('/')}
+          title="Return to Relay public homepage"
+        >
+          Website Home
+        </Button>
+
         {/* Switch to Assistant View */}
         <Button
           variant="secondary"
@@ -247,7 +259,7 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
           icon={ExternalLink}
           iconPosition="right"
           onClick={handleSwitchToAssistant}
-          title="Open Elena Rostova's full executive assistant workspace"
+          title="Open Ananya Sharma's full executive assistant workspace"
         >
           Assistant Workspace
         </Button>
@@ -282,11 +294,11 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
                 justifyContent: 'center'
               }}
             >
-              MV
+              AM
             </div>
             <div style={{ textAlign: 'left' }} className="desktop-only">
               <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-charcoal)' }}>
-                Marcus Vance
+                Arjun Mehta
               </div>
             </div>
             <ChevronDown size={13} color="var(--color-charcoal-muted)" />
@@ -308,12 +320,12 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
               }}
             >
               <div style={{ padding: '8px 10px', borderBottom: 'var(--border-subtle)' }}>
-                <div style={{ fontSize: '13px', fontWeight: 600 }}>Marcus Vance</div>
+                <div style={{ fontSize: '13px', fontWeight: 600 }}>Arjun Mehta</div>
                 <div style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>
                   Founder & Managing Partner
                 </div>
                 <div style={{ fontSize: '10px', color: 'var(--color-charcoal-light)', marginTop: '2px' }}>
-                  marcus.vance@vancetech.io
+                  arjun.mehta@mehtaventures.in
                 </div>
               </div>
 
@@ -347,7 +359,7 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
                   }}
                 >
                   <Shield size={14} color="var(--color-primary)" />
-                  Elena Rostova (Assistant)
+                  Ananya Sharma (Assistant)
                 </button>
                 <button
                   onClick={async () => {
@@ -369,11 +381,32 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
                   }}
                 >
                   <User size={14} color="var(--color-resp-client)" />
-                  Marcus Vance (Client)
+                  Arjun Mehta (Client)
                 </button>
               </div>
 
-              <div style={{ borderTop: 'var(--border-subtle)', paddingTop: '6px' }}>
+              <div style={{ borderTop: 'var(--border-subtle)', paddingTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <button
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    navigate('/');
+                  }}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '6px 10px',
+                    fontSize: '12px',
+                    color: 'var(--color-charcoal)',
+                    borderRadius: 'var(--radius-sm)',
+                    textAlign: 'left',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Globe size={14} color="var(--color-primary)" />
+                  Website Home
+                </button>
                 <button
                   onClick={() => {
                     setShowProfileMenu(false);
@@ -389,7 +422,8 @@ export default function ClientTopBar({ searchQuery, onSearchChange, onAccountCha
                     fontSize: '12px',
                     color: 'var(--color-danger)',
                     borderRadius: 'var(--radius-sm)',
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    cursor: 'pointer'
                   }}
                 >
                   <LogOut size={14} /> Sign Out

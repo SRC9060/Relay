@@ -10,25 +10,25 @@ import { seedUsers, seedAccounts, seedConversations } from '../data/seedData.js'
  */
 export const seedDatabase = async () => {
   try {
-    // 1. Seed Users (idempotent via $setOnInsert)
+    // 1. Seed Users (idempotent update via $set)
     for (const user of seedUsers) {
       await User.findOneAndUpdate(
         { id: user.id },
-        { $setOnInsert: user },
+        { $set: user },
         { upsert: true, new: true }
       );
     }
 
-    // 2. Seed Accounts (idempotent via $setOnInsert)
+    // 2. Seed Accounts (idempotent update via $set)
     for (const account of seedAccounts) {
       await Account.findOneAndUpdate(
         { id: account.id },
-        { $setOnInsert: account },
+        { $set: account },
         { upsert: true, new: true }
       );
     }
 
-    // 3. Seed Conversations (idempotent via $setOnInsert)
+    // 3. Seed Conversations (idempotent update via $set)
     for (const conv of seedConversations) {
       const convData = { ...conv };
       if (convData.needsReview === undefined) {
@@ -49,7 +49,7 @@ export const seedDatabase = async () => {
 
       await Conversation.findOneAndUpdate(
         { id: convData.id },
-        { $setOnInsert: convData },
+        { $set: convData },
         { upsert: true, new: true }
       );
     }

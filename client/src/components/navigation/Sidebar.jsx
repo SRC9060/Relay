@@ -15,6 +15,7 @@ import {
   Link2,
   Settings,
   ShieldCheck,
+  Globe,
   X
 } from 'lucide-react';
 import Badge from '../common/Badge';
@@ -47,7 +48,8 @@ export default function Sidebar({ isOpen, onClose }) {
         { path: '/app/ai-assistant', label: 'AI Assistant', icon: Sparkles, tag: 'AI' },
         { path: '/app/archive', label: 'Archived', icon: Archive, count: counts?.archive ?? 1 },
         { path: '/app/accounts', label: 'Connected Accounts', icon: Link2 },
-        { path: '/app/settings', label: 'Settings', icon: Settings }
+        { path: '/app/settings', label: 'Settings', icon: Settings },
+        { path: '/', label: 'Website Home', icon: Globe }
       ]
     }
   ];
@@ -176,7 +178,7 @@ export default function Sidebar({ isOpen, onClose }) {
               flexShrink: 0
             }}
           >
-            MV
+            AM
           </div>
           <div style={{ minWidth: 0 }}>
             <div
@@ -189,7 +191,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 textOverflow: 'ellipsis'
               }}
             >
-              Marcus Vance
+              Arjun Mehta
             </div>
             <div style={{ fontSize: '11px', color: 'var(--color-charcoal-muted)' }}>
               Client Queue Active
@@ -229,6 +231,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   <NavLink
                     key={item.path}
                     to={item.path}
+                    end={item.path === '/'}
                     onClick={onClose}
                     className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
                     style={({ isActive }) => ({
@@ -324,7 +327,7 @@ export default function Sidebar({ isOpen, onClose }) {
           alignItems: 'center'
         }}
       >
-        <span>Elena (Assistant)</span>
+        <span>Ananya (Assistant)</span>
         <span style={{ fontWeight: 600, color: 'var(--color-primary)' }} className="tabular-nums">Relay v1.0</span>
       </div>
     </aside>

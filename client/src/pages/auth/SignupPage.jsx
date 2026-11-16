@@ -227,7 +227,7 @@ export default function SignupPage() {
               icon={User}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Elena Rostova"
+              placeholder="e.g. Ananya Sharma"
               required
               autoComplete="name"
             />
@@ -238,7 +238,7 @@ export default function SignupPage() {
               icon={Mail}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. elena@vancetech.io"
+              placeholder="e.g. ananya@mehtaventures.in"
               required
               autoComplete="email"
             />

@@ -47,7 +47,7 @@ export default function OverviewPage() {
       .slice(0, 6);
   }, [conversations]);
 
-  // 2. Client Attention items (for Marcus Vance)
+  // 2. Client Attention items (for Arjun Mehta)
   const clientAttentionItems = useMemo(() => {
     return conversations
       .filter((c) => !c.isArchived && c.responsibility === 'client' && c.actionStatus !== 'completed')
@@ -91,11 +91,11 @@ export default function OverviewPage() {
               What needs attention today?
             </h1>
             <Badge type="assistant" size="sm">
-              <ShieldCheck size={11} /> Elena Rostova
+              <ShieldCheck size={11} /> Ananya Sharma
             </Badge>
           </div>
           <p style={{ fontSize: '13px', color: 'var(--color-charcoal-muted)' }}>
-            Executive communications for <strong>{user?.clientName || 'Marcus Vance'}</strong> across {accounts.length} active gateways.
+            Executive communications for <strong>{user?.clientName || 'Arjun Mehta'}</strong> across {accounts.length} active gateways.
           </p>
         </div>
 
@@ -141,7 +141,7 @@ export default function OverviewPage() {
             {clientCount}
           </div>
           <div style={{ fontSize: '11.5px', color: 'var(--color-charcoal-muted)', marginTop: '4px' }}>
-            Statutory & board approvals for Marcus
+            Statutory & board approvals for Arjun
           </div>
         </Card>
 
@@ -311,7 +311,7 @@ export default function OverviewPage() {
           {/* Client Attention Spotlight */}
           <Card
             title="Client Attention Queue"
-            subtitle={`Marcus Vance • ${clientCount} pending decisions`}
+            subtitle={`Arjun Mehta • ${clientCount} pending decisions`}
             action={
               <Button
                 variant="ghost"
@@ -353,7 +353,7 @@ export default function OverviewPage() {
                 onClick={() => navigate('/client')}
                 style={{ width: '100%', marginTop: '6px', borderColor: 'var(--color-resp-client-border)', color: 'var(--color-resp-client)' }}
               >
-                Open Marcus's Decision Desk
+                Open Arjun's Decision Desk
               </Button>
             </div>
           </Card>
