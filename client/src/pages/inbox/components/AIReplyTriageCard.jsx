@@ -42,8 +42,18 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
     identifiedDates = []
   } = conversation;
 
-  const isLowConfidence = Boolean(needsReview || responsibility === 'review' || (confidenceScore && confidenceScore < 0.75));
-  const confidencePercent = Math.round((confidenceScore || 0.95) * 100);
+  // Seeded demo records may contain a placeholder score before any AI evaluation.
+  // Only display a percentage when a classifier result and score are both present.
+  const hasConfidence = confidenceScore !== null &&
+    confidenceScore !== undefined &&
+    Number.isFinite(Number(confidenceScore)) &&
+    Boolean(aiSource);
+  const confidencePercent = hasConfidence ? Math.round(Number(confidenceScore) * 100) : null;
+  const isLowConfidence = Boolean(
+    needsReview ||
+    responsibility === 'review' ||
+    (hasConfidence && confidencePercent < 75)
+  );
 
   const handleReevaluate = async () => {
     setIsClassifying(true);
@@ -130,9 +140,11 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
             >
               <div
                 style={{
-                  width: `${confidencePercent}%`,
+                  width: hasConfidence ? `${confidencePercent}%` : '0%',
                   height: '100%',
-                  backgroundColor: isLowConfidence
+                  backgroundColor: !hasConfidence
+                    ? 'var(--color-charcoal-light)'
+                    : isLowConfidence
                     ? 'var(--color-resp-review)'
                     : confidencePercent > 90
                     ? 'var(--color-success)'
@@ -145,11 +157,11 @@ export default function AIReplyTriageCard({ conversation, onToggleSummary }) {
               style={{
                 fontSize: '11px',
                 fontWeight: 600,
-                color: isLowConfidence ? 'var(--color-resp-review)' : 'var(--color-charcoal-muted)'
+                color: !hasConfidence ? 'var(--color-charcoal-muted)' : isLowConfidence ? 'var(--color-resp-review)' : 'var(--color-charcoal-muted)'
               }}
-              title="Model confidence estimate"
+              title={hasConfidence ? 'Classifier confidence estimate' : 'Run Re-evaluate to calculate a confidence score'}
             >
-              {confidencePercent}% confidence
+              {hasConfidence ? `${confidencePercent}% confidence` : 'Not evaluated'}
             </span>
           </div>
 
