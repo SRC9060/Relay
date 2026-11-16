@@ -1,0 +1,102 @@
+/**
+ * Relay Design System — Warm Swiss Minimalism
+ * Design Tokens
+ */
+
+:root {
+  /* Core Palette (Refined Warm Swiss Minimalism) */
+  --color-bg: #F6F5F0;
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: #E9EDE6;
+  --color-surface-hover: #E1E6DD;
+  
+  --color-primary: #354B3F;        /* Refined Botanical Forest Green */
+  --color-primary-light: #445F51;
+  --color-primary-dark: #27372E;
+  --color-primary-muted: rgba(53, 75, 63, 0.08);
+
+  --color-sage: #E9EDE6;
+  --color-sage-dark: #A8B39F;
+  
+  --color-charcoal: #292D29;       /* Deep Warm Graphite */
+  --color-charcoal-muted: #5A5E5A;
+  --color-charcoal-light: #8D918D;
+  
+  --color-sand: #DFD8CA;
+  --color-sand-light: #EFECE4;
+
+  /* Functional Responsibility Palette */
+  --color-resp-assistant: #354B3F;
+  --color-resp-assistant-bg: #E9EDE6;
+  --color-resp-assistant-border: #A8B39F;
+
+  --color-resp-client: #B57948;     /* Warm Executive Amber */
+  --color-resp-client-bg: #FBF5EE;
+  --color-resp-client-border: #EAD7C4;
+
+  --color-resp-none: #6B706B;       /* Neutral Quiet Grey */
+  --color-resp-none-bg: #F0F1ED;
+  --color-resp-none-border: #D8DBD4;
+
+  --color-resp-review: #B84A2A;     /* Muted Terracotta */
+  --color-resp-review-bg: #FDF1ED;
+  --color-resp-review-border: #F1CAC0;
+
+  /* Status Colors */
+  --color-success: #2A6E4E;
+  --color-success-bg: #EDF7F1;
+  --color-warning: #B57948;
+  --color-warning-bg: #FBF5EE;
+  --color-danger: #C0392B;
+  --color-danger-bg: #FDF0ED;
+  --color-info: #285A84;
+  --color-info-bg: #EDF4F9;
+
+  /* Subtle Borders (Swiss Minimalism prefers crisp hairline borders to heavy shadows) */
+  --border-subtle: 1px solid #E5E3DC;
+  --border-medium: 1px solid #D6D3C9;
+  --border-strong: 1px solid var(--color-charcoal);
+  --border-focus: 2px solid var(--color-primary);
+
+  /* Corner Radii (10–14px per spec) */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-full: 9999px;
+
+  /* Elevation (Restrained, subtle) */
+  --shadow-none: none;
+  --shadow-subtle: 0 1px 2px rgba(41, 43, 41, 0.04);
+  --shadow-card: 0 2px 6px rgba(41, 43, 41, 0.05), 0 1px 2px rgba(41, 43, 41, 0.03);
+  --shadow-dropdown: 0 4px 14px rgba(41, 43, 41, 0.08), 0 1px 3px rgba(41, 43, 41, 0.04);
+  --shadow-modal: 0 16px 36px rgba(41, 43, 41, 0.12), 0 2px 6px rgba(41, 43, 41, 0.04);
+
+  /* Typography */
+  --font-heading: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Hover & Interaction System (180ms ease per spec) */
+  --transition-hover: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-hover: 0 4px 12px rgba(41, 43, 41, 0.08), 0 1px 3px rgba(41, 43, 41, 0.04);
+  --shadow-card-hover: 0 6px 16px rgba(41, 43, 41, 0.07), 0 2px 4px rgba(41, 43, 41, 0.03);
+  --shadow-button-hover: 0 2px 8px rgba(53, 75, 63, 0.18);
+  --border-hover: 1px solid #C4C0B4;
+}
