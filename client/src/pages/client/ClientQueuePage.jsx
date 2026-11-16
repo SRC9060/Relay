@@ -227,7 +227,7 @@ export default function ClientQueuePage() {
             maxWidth: '460px',
             backgroundColor: 'var(--color-surface)',
             borderRight: 'var(--border-subtle)',
-            display: showMobileDetail ? 'none' : 'flex',
+            display: 'flex',
             flexDirection: 'column',
             height: '100%',
             overflow: 'hidden'
