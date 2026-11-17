@@ -1,0 +1,6 @@
+# Relay Robots Policy
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /client
+Disallow: /api/

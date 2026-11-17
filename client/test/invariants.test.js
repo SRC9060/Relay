@@ -429,3 +429,50 @@ test('Navigation links and CTA polish invariants are verified', () => {
   const footerCtaSection = homePageCode.slice(homePageCode.indexOf('Experience Relay\'s dual-workspace architecture'));
   assert.ok(!footerCtaSection.includes('icon={Sparkles}'), 'Footer Explore Live Demo button does not have star/Sparkles icon');
 });
+
+test('Semantic landmarks, SEO metadata, and heading hierarchy invariants are verified', () => {
+  const homePageCode = fs.readFileSync(path.resolve('./src/pages/public/HomePage.jsx'), 'utf-8');
+  assert.ok(homePageCode.includes('<main id="main-content"'), 'HomePage contains <main id="main-content"> landmark');
+  assert.ok(homePageCode.includes('className="skip-to-content"'), 'HomePage provides accessible skip-to-content link');
+  assert.ok(homePageCode.includes('Interactive Workflow Preview'), 'HomePage provides clear interactive preview label');
+  assert.ok(homePageCode.includes('Select a card to explore how Relay handles your inbox'), 'HomePage provides card interaction hint');
+  
+  // Hero CTA hierarchy: Header has Explore Live Demo, Hero has See How It Works without repeating duplicate Explore Demo
+  const heroCtaSection = homePageCode.slice(
+    homePageCode.indexOf('className="home-hero-cta-group"'),
+    homePageCode.indexOf('Honest Simulated Prototype Disclosure')
+  );
+  assert.ok(heroCtaSection.includes('See How It Works'), 'Hero has See How It Works secondary action');
+  assert.ok(!heroCtaSection.includes('Explore Live Demo'), 'Hero does not repeat duplicate primary Explore Live Demo button');
+
+  // Verify SEO metadata in index.html
+  const indexHtml = fs.readFileSync(path.resolve('./index.html'), 'utf-8');
+  assert.ok(indexHtml.includes('name="description"'), 'index.html contains meta name="description"');
+  assert.ok(indexHtml.includes('Relay is an AI-powered correspondence platform'), 'Meta description content is populated');
+
+  // Verify robots.txt exists in public/
+  const robotsTxtPath = path.resolve('./public/robots.txt');
+  assert.ok(fs.existsSync(robotsTxtPath), 'public/robots.txt exists');
+  const robotsTxt = fs.readFileSync(robotsTxtPath, 'utf-8');
+  assert.ok(robotsTxt.includes('User-agent: *'), 'robots.txt includes User-agent');
+  assert.ok(robotsTxt.includes('Disallow: /app/'), 'robots.txt protects /app/');
+  assert.ok(robotsTxt.includes('Disallow: /client'), 'robots.txt protects /client');
+});
+
+test('Interactive cards accessibility and semantic confidence labels are verified', () => {
+  const homePageCode = fs.readFileSync(path.resolve('./src/pages/public/HomePage.jsx'), 'utf-8');
+  
+  // Interactive cards keyboard accessibility
+  assert.ok(homePageCode.includes('role="button"'), 'Demo cards declare role="button"');
+  assert.ok(homePageCode.includes('tabIndex={0}'), 'Demo cards have tabIndex={0} for keyboard focus');
+  assert.ok(homePageCode.includes('aria-pressed='), 'Demo cards use aria-pressed for active state');
+  assert.ok(homePageCode.includes('onKeyDown='), 'Demo cards handle keyboard activation');
+
+  // Semantic confidence pairing
+  assert.ok(homePageCode.includes('98%') && homePageCode.includes('high confidence'), 'Card 1 pairs percentage with High confidence label');
+  assert.ok(homePageCode.includes('96%') && homePageCode.includes('high confidence'), 'Card 2 pairs percentage with High confidence label');
+  assert.ok(homePageCode.includes('99%') && homePageCode.includes('high confidence'), 'Card 3 pairs percentage with High confidence label');
+
+  // Strict descending heading hierarchy: No <h4> tags present anywhere on HomePage
+  assert.ok(!homePageCode.includes('<h4'), 'HomePage strictly uses H1, H2, and H3 with zero H4 skipping');
+});

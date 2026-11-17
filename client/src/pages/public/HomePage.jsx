@@ -167,11 +167,16 @@ export default function HomePage() {
         overflowX: 'hidden'
       }}
     >
+      {/* Accessible Skip Link */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
+
       {/* 1. Public Top Navigation */}
       <header
         style={{
-          height: '68px',
-          backgroundColor: 'rgba(247, 246, 241, 0.92)',
+          height: '64px',
+          backgroundColor: 'rgba(247, 246, 241, 0.94)',
           backdropFilter: 'blur(8px)',
           borderBottom: 'var(--border-subtle)',
           position: 'sticky',
@@ -180,13 +185,15 @@ export default function HomePage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 32px'
+          padding: '0 clamp(16px, 3.5vw, 32px)'
         }}
       >
         {/* Brand */}
         <Link to="/" className="brand-link" style={{ textDecoration: 'none' }}>
           <div
             className="brand-icon-box relay-brand-mark"
+            role="presentation"
+            tabIndex={-1}
             style={{
               width: '32px',
               height: '32px',
@@ -220,6 +227,7 @@ export default function HomePage() {
 
         {/* Center Links */}
         <nav
+          aria-label="Public site navigation"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -242,15 +250,15 @@ export default function HomePage() {
         </nav>
 
         {/* Right CTAs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {isAuthenticated ? (
             <Button
               variant="primary"
-              size="sm"
+              size="md"
               icon={ArrowRight}
               iconPosition="right"
               onClick={() => navigate(user?.role === 'client' ? '/client' : '/app/overview')}
-              style={{ minHeight: '38px' }}
+              style={{ minHeight: '44px', fontWeight: 600, padding: '10px 18px', fontSize: '14px' }}
             >
               Enter Workspace
             </Button>
@@ -260,22 +268,30 @@ export default function HomePage() {
                 to="/login"
                 className="public-nav-link"
                 style={{
-                  fontSize: '13px',
+                  fontSize: '13.5px',
                   fontWeight: 500,
-                  textDecoration: 'none'
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                  padding: '8px 10px'
                 }}
               >
                 Sign in
               </Link>
               <Button
                 variant="primary"
-                size="sm"
+                size="md"
                 icon={ArrowRight}
                 iconPosition="right"
                 onClick={() => setShowDemoModal(true)}
                 title="Explore demo"
                 aria-label="Explore demo"
-                style={{ minHeight: '38px', fontWeight: 600 }}
+                style={{
+                  minHeight: '44px',
+                  padding: '10px 18px',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap'
+                }}
               >
                 Explore Live Demo
               </Button>
@@ -284,128 +300,176 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 2. Hero Section */}
-      <section
-        id="product"
-        style={{
-          padding: 'clamp(48px, 8vw, 76px) clamp(16px, 3vw, 24px) 44px',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center'
-        }}
-      >
-        {/* Subtle pill tag */}
-        <div
+      {/* Main Landmark */}
+      <main id="main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* 2. Hero Section */}
+        <section
+          id="product"
+          aria-labelledby="hero-heading"
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '7px',
-            padding: '5px 14px',
-            borderRadius: 'var(--radius-full)',
-            backgroundColor: 'var(--color-surface-subtle)',
-            border: 'var(--border-subtle)',
-            fontSize: '12px',
-            fontWeight: 600,
-            color: 'var(--color-primary)',
-            marginBottom: '20px',
-            letterSpacing: '0.01em'
-          }}
-        >
-          <ShieldCheck size={14} color="var(--color-primary)" />
-          Assistant & Client Email Workflow • Ananya (Assistant) & Arjun (Client)
-        </div>
-
-        {/* Main Headline */}
-        <h1
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(30px, 5.2vw, 54px)',
-            fontWeight: 700,
-            color: 'var(--color-charcoal)',
-            lineHeight: 1.15,
-            letterSpacing: '-0.03em',
-            maxWidth: '860px',
-            marginBottom: '16px'
-          }}
-        >
-          Every conversation. The right person to respond.
-        </h1>
-
-        {/* Supporting description */}
-        <p
-          style={{
-            fontSize: 'clamp(15px, 2vw, 17px)',
-            color: 'var(--color-charcoal-muted)',
-            lineHeight: 1.6,
-            maxWidth: '680px',
-            marginBottom: '28px'
-          }}
-        >
-          Relay connects Personal Assistants and Clients in a shared correspondence workflow.
-          AI classifies who needs to reply, protects human decisions, and routes executive approvals
-          so clients stay focused while assistants execute.
-        </p>
-
-        {/* Action CTAs */}
-        <div
-          className="home-hero-cta-group"
-          style={{
+            padding: 'clamp(20px, 3vw, 32px) clamp(16px, 3vw, 24px) 16px',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            width: '100%',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            flexWrap: 'wrap',
-            marginBottom: '18px'
+            textAlign: 'center'
           }}
         >
-          <Button
-            variant="primary"
-            size="lg"
-            icon={ArrowRight}
-            iconPosition="right"
-            onClick={() => setShowDemoModal(true)}
-            title="Explore demo"
-            aria-label="Explore demo"
-            style={{ minHeight: '44px', padding: '12px 28px', fontSize: '14.5px', fontWeight: 600 }}
+          {/* Subtle pill tag */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '7px',
+              padding: '4px 12px',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: 'var(--color-surface-subtle)',
+              border: 'var(--border-subtle)',
+              fontSize: '11.5px',
+              fontWeight: 600,
+              color: 'var(--color-primary)',
+              marginBottom: '10px',
+              letterSpacing: '0.01em',
+              maxWidth: '92vw'
+            }}
           >
-            Explore Live Demo
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            onClick={scrollToHowItWorks}
-            style={{ minHeight: '44px', padding: '12px 24px', fontSize: '14.5px' }}
+            <ShieldCheck size={13} color="var(--color-primary)" style={{ flexShrink: 0 }} />
+            <span>Assistant & Client Email Workflow • Ananya (Assistant) & Arjun (Client)</span>
+          </div>
+
+          {/* Main Headline */}
+          <h1
+            id="hero-heading"
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(28px, 4vw, 44px)',
+              fontWeight: 700,
+              color: 'var(--color-charcoal)',
+              lineHeight: 1.15,
+              letterSpacing: '-0.03em',
+              maxWidth: '820px',
+              marginBottom: '10px'
+            }}
           >
-            See How It Works
-          </Button>
-        </div>
+            Every conversation. The right person to respond.
+          </h1>
 
-        {/* Honest Simulated Prototype Disclosure */}
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '7px',
-            fontSize: '12px',
-            color: 'var(--color-charcoal-muted)',
-            maxWidth: '640px',
-            lineHeight: 1.45,
-            marginBottom: '44px',
-            padding: '4px 12px'
-          }}
-        >
-          <ShieldCheck size={13} color="var(--color-primary)" style={{ flexShrink: 0 }} />
-          <span>
-            <strong>Simulated Prototype Notice:</strong> Inboxes, threads, and AI actions in this demo environment are fully simulated. No real OAuth connections or actual email sending.
-          </span>
-        </div>
+          {/* Supporting description */}
+          <p
+            style={{
+              fontSize: 'clamp(14px, 1.6vw, 15.5px)',
+              color: 'var(--color-charcoal-muted)',
+              lineHeight: 1.5,
+              maxWidth: '660px',
+              marginBottom: '14px'
+            }}
+          >
+            Relay connects Personal Assistants and Clients in a shared correspondence workflow.
+            AI classifies who needs to reply, protects human decisions, and routes executive approvals
+            so clients stay focused while assistants execute.
+          </p>
 
-        {/* 3. Hero Visual: Premium Interactive 3D Layered Product Stage */}
+          {/* Action CTA: Distinct Secondary Hero Action (No duplicate primary Explore Demo) */}
+          <div
+            className="home-hero-cta-group"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              marginBottom: '12px'
+            }}
+          >
+            <Button
+              variant="secondary"
+              size="md"
+              icon={ArrowRight}
+              iconPosition="right"
+              onClick={scrollToHowItWorks}
+              title="See how Relay works"
+              aria-label="See how Relay works"
+              style={{ minHeight: '40px', padding: '8px 22px', fontSize: '13.5px', fontWeight: 600 }}
+            >
+              See How It Works
+            </Button>
+          </div>
+
+          {/* Honest Simulated Prototype Disclosure */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              fontSize: '11px',
+              color: 'var(--color-charcoal-muted)',
+              maxWidth: '640px',
+              lineHeight: 1.4,
+              marginBottom: '14px',
+              padding: '2px 10px'
+            }}
+          >
+            <ShieldCheck size={12} color="var(--color-primary)" style={{ flexShrink: 0 }} />
+            <span>
+              <strong>Simulated Prototype Notice:</strong> Inboxes, threads, and AI actions in this demo environment are fully simulated. No real OAuth connections or actual email sending.
+            </span>
+          </div>
+
+          {/* Interactive Preview Header & Description */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '8px',
+              marginBottom: '10px',
+              padding: '0 4px',
+              width: '100%',
+              maxWidth: '1100px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  fontSize: '10.5px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: 'var(--color-primary)',
+                  backgroundColor: 'var(--color-surface-subtle)',
+                  border: '1px solid var(--border-subtle)',
+                  padding: '2px 7px',
+                  borderRadius: 'var(--radius-xs)'
+                }}
+              >
+                Interactive Workflow Preview
+              </span>
+              <span style={{ fontSize: '12px', color: 'var(--color-charcoal-muted)', fontWeight: 500 }}>
+                Select a card to explore how Relay handles your inbox.
+              </span>
+            </div>
+            <div
+              style={{
+                fontSize: '11px',
+                fontWeight: 600,
+                color: 'var(--color-charcoal)',
+                backgroundColor: 'var(--color-surface)',
+                padding: '2px 9px',
+                borderRadius: 'var(--radius-full)',
+                border: 'var(--border-subtle)'
+              }}
+              aria-live="polite"
+            >
+              {activeCardIndex === 0 && 'Active: Card 1 — Board Resolution (Client to Reply)'}
+              {activeCardIndex === 1 && 'Active: Card 2 — Tech Summit (Assistant to Reply)'}
+              {activeCardIndex === 2 && 'Active: Card 3 — Market Brief (No Reply Needed)'}
+            </div>
+          </div>
+
+          {/* 3. Hero Visual: Premium Interactive 3D Layered Product Stage */}
         <div
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -498,28 +562,38 @@ export default function HomePage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
-                gap: '20px',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+                gap: '16px',
                 transformStyle: 'preserve-3d'
               }}
             >
               {/* Card 1: Client to Reply (Governance) */}
               <motion.div
+                role="button"
+                tabIndex={0}
+                aria-pressed={activeCardIndex === 0}
+                aria-label="Board Resolution: Series B Written Consent. Client to Reply, 98% confidence. Click or press Enter to inspect."
                 onClick={() => setActiveCardIndex(0)}
-                whileHover={{ y: -6, scale: 1.01 }}
-                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setActiveCardIndex(0);
+                  }
+                }}
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  transform: activeCardIndex === 0 ? 'translateZ(26px)' : 'translateZ(8px)',
+                  transform: activeCardIndex === 0 ? 'translateZ(24px)' : 'translateZ(8px)',
                   backgroundColor: 'var(--color-surface)',
                   borderRadius: 'var(--radius-xl)',
                   border: activeCardIndex === 0 ? '2px solid var(--color-resp-client)' : '1px solid var(--border-subtle)',
                   boxShadow: activeCardIndex === 0
-                    ? '0 24px 48px -12px rgba(181, 121, 72, 0.2), 0 2px 6px rgba(41, 45, 41, 0.04)'
-                    : '0 8px 24px -6px rgba(41, 45, 41, 0.06), 0 1px 3px rgba(41, 45, 41, 0.03)',
-                  padding: '24px',
+                    ? '0 16px 36px -10px rgba(138, 88, 38, 0.22), 0 2px 6px rgba(41, 45, 41, 0.04)'
+                    : '0 4px 16px -4px rgba(41, 45, 41, 0.06), 0 1px 3px rgba(41, 45, 41, 0.03)',
+                  padding: '20px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '12px',
+                  gap: '10px',
                   cursor: 'pointer',
                   position: 'relative',
                   transition: 'border-color var(--transition-fast), box-shadow var(--transition-fast)'
@@ -543,8 +617,24 @@ export default function HomePage() {
                     >
                       Client to Reply
                     </span>
-                    <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--color-resp-client)' }}>
-                      98%
+                    <span
+                      title="AI Confidence: 98% (High confidence)"
+                      aria-label="98% confidence score, high confidence"
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        padding: '2px 7px',
+                        borderRadius: 'var(--radius-full)',
+                        backgroundColor: 'var(--color-surface-subtle)',
+                        color: 'var(--color-charcoal)',
+                        border: '1px solid var(--border-subtle)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
+                      }}
+                    >
+                      <span>98%</span>
+                      <span style={{ fontSize: '9.5px', color: 'var(--color-charcoal-muted)', fontWeight: 500 }}>High</span>
                     </span>
                   </div>
                 </div>
@@ -560,19 +650,19 @@ export default function HomePage() {
 
                 <div
                   style={{
-                    padding: '12px 14px',
+                    padding: '10px 12px',
                     backgroundColor: 'var(--color-resp-client-bg)',
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--color-resp-client-border)',
                     fontSize: '12px',
                     color: 'var(--color-resp-client-dark)',
-                    lineHeight: 1.5
+                    lineHeight: 1.45
                   }}
                 >
                   <strong style={{ fontWeight: 700 }}>AI Reasoning:</strong> Formal corporate governance action requiring statutory written consent and managing partner signature from Arjun Mehta.
                 </div>
 
-                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '8px' }}>
+                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '6px' }}>
                   <span style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }}>
                     2 turns • 2 hours ago
                   </span>
@@ -584,21 +674,31 @@ export default function HomePage() {
 
               {/* Card 2: Assistant to Reply (Travel & Logistics) */}
               <motion.div
+                role="button"
+                tabIndex={0}
+                aria-pressed={activeCardIndex === 1}
+                aria-label="Bengaluru Tech Summit: Suite & Transfers. Assistant to Reply, 96% confidence. Click or press Enter to inspect."
                 onClick={() => setActiveCardIndex(1)}
-                whileHover={{ y: -6, scale: 1.01 }}
-                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setActiveCardIndex(1);
+                  }
+                }}
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  transform: activeCardIndex === 1 ? 'translateZ(26px)' : 'translateZ(8px)',
+                  transform: activeCardIndex === 1 ? 'translateZ(24px)' : 'translateZ(8px)',
                   backgroundColor: 'var(--color-surface)',
                   borderRadius: 'var(--radius-xl)',
                   border: activeCardIndex === 1 ? '2px solid var(--color-primary)' : '1px solid var(--border-subtle)',
                   boxShadow: activeCardIndex === 1
-                    ? '0 24px 48px -12px rgba(53, 75, 63, 0.2), 0 2px 6px rgba(41, 45, 41, 0.04)'
-                    : '0 8px 24px -6px rgba(41, 45, 41, 0.06), 0 1px 3px rgba(41, 45, 41, 0.03)',
-                  padding: '24px',
+                    ? '0 16px 36px -10px rgba(53, 75, 63, 0.22), 0 2px 6px rgba(41, 45, 41, 0.04)'
+                    : '0 4px 16px -4px rgba(41, 45, 41, 0.06), 0 1px 3px rgba(41, 45, 41, 0.03)',
+                  padding: '20px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '12px',
+                  gap: '10px',
                   cursor: 'pointer',
                   position: 'relative',
                   transition: 'border-color var(--transition-fast), box-shadow var(--transition-fast)'
@@ -622,8 +722,24 @@ export default function HomePage() {
                     >
                       Assistant to Reply
                     </span>
-                    <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--color-primary)' }}>
-                      96%
+                    <span
+                      title="AI Confidence: 96% (High confidence)"
+                      aria-label="96% confidence score, high confidence"
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        padding: '2px 7px',
+                        borderRadius: 'var(--radius-full)',
+                        backgroundColor: 'var(--color-surface-subtle)',
+                        color: 'var(--color-charcoal)',
+                        border: '1px solid var(--border-subtle)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
+                      }}
+                    >
+                      <span>96%</span>
+                      <span style={{ fontSize: '9.5px', color: 'var(--color-charcoal-muted)', fontWeight: 500 }}>High</span>
                     </span>
                   </div>
                 </div>
@@ -639,19 +755,19 @@ export default function HomePage() {
 
                 <div
                   style={{
-                    padding: '12px 14px',
+                    padding: '10px 12px',
                     backgroundColor: 'var(--color-resp-assistant-bg)',
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--color-resp-assistant-border)',
                     fontSize: '12px',
                     color: 'var(--color-primary)',
-                    lineHeight: 1.5
+                    lineHeight: 1.45
                   }}
                 >
                   <strong style={{ fontWeight: 700 }}>AI Reasoning:</strong> Chauffeur airport logistics and VIP dietary confirmations fall squarely within executive assistant responsibilities.
                 </div>
 
-                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '8px' }}>
+                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '6px' }}>
                   <span style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }}>
                     1 turn • 4 hours ago
                   </span>
@@ -663,21 +779,31 @@ export default function HomePage() {
 
               {/* Card 3: No Reply Needed (Informational Brief) */}
               <motion.div
+                role="button"
+                tabIndex={0}
+                aria-pressed={activeCardIndex === 2}
+                aria-label="The Ken Executive Brief. No Reply Needed, 99% confidence. Click or press Enter to inspect."
                 onClick={() => setActiveCardIndex(2)}
-                whileHover={{ y: -6, scale: 1.01 }}
-                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setActiveCardIndex(2);
+                  }
+                }}
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  transform: activeCardIndex === 2 ? 'translateZ(26px)' : 'translateZ(8px)',
+                  transform: activeCardIndex === 2 ? 'translateZ(24px)' : 'translateZ(8px)',
                   backgroundColor: 'var(--color-surface)',
                   borderRadius: 'var(--radius-xl)',
                   border: activeCardIndex === 2 ? '2px solid var(--color-resp-none)' : '1px solid var(--border-subtle)',
                   boxShadow: activeCardIndex === 2
-                    ? '0 24px 48px -12px rgba(107, 112, 107, 0.2), 0 2px 6px rgba(41, 45, 41, 0.04)'
-                    : '0 8px 24px -6px rgba(41, 45, 41, 0.06), 0 1px 3px rgba(41, 45, 41, 0.03)',
-                  padding: '24px',
+                    ? '0 16px 36px -10px rgba(89, 94, 89, 0.22), 0 2px 6px rgba(41, 45, 41, 0.04)'
+                    : '0 4px 16px -4px rgba(41, 45, 41, 0.06), 0 1px 3px rgba(41, 45, 41, 0.03)',
+                  padding: '20px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '12px',
+                  gap: '10px',
                   cursor: 'pointer',
                   position: 'relative',
                   transition: 'border-color var(--transition-fast), box-shadow var(--transition-fast)'
@@ -701,8 +827,24 @@ export default function HomePage() {
                     >
                       No Reply Needed
                     </span>
-                    <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--color-resp-none)' }}>
-                      99%
+                    <span
+                      title="AI Confidence: 99% (High confidence)"
+                      aria-label="99% confidence score, high confidence"
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        padding: '2px 7px',
+                        borderRadius: 'var(--radius-full)',
+                        backgroundColor: 'var(--color-surface-subtle)',
+                        color: 'var(--color-charcoal)',
+                        border: '1px solid var(--border-subtle)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
+                      }}
+                    >
+                      <span>99%</span>
+                      <span style={{ fontSize: '9.5px', color: 'var(--color-charcoal-muted)', fontWeight: 500 }}>High</span>
                     </span>
                   </div>
                 </div>
@@ -718,19 +860,19 @@ export default function HomePage() {
 
                 <div
                   style={{
-                    padding: '12px 14px',
+                    padding: '10px 12px',
                     backgroundColor: 'var(--color-resp-none-bg)',
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--color-resp-none-border)',
                     fontSize: '12px',
                     color: 'var(--color-charcoal-muted)',
-                    lineHeight: 1.5
+                    lineHeight: 1.45
                   }}
                 >
                   <strong style={{ fontWeight: 700 }}>AI Reasoning:</strong> Automated intelligence newsletter and market analysis. Zero action, reply, or delegation required.
                 </div>
 
-                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '8px' }}>
+                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '6px' }}>
                   <span style={{ fontSize: '11px', color: 'var(--color-charcoal-light)' }}>
                     Automated • Yesterday
                   </span>
@@ -747,6 +889,7 @@ export default function HomePage() {
       {/* 4. How It Works Section */}
       <motion.section
         id="how-it-works"
+        aria-labelledby="how-it-works-heading"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
@@ -772,6 +915,7 @@ export default function HomePage() {
               Workflow Architecture
             </span>
             <h2
+              id="how-it-works-heading"
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: 'clamp(24px, 3.5vw, 36px)',
@@ -1007,6 +1151,7 @@ export default function HomePage() {
       {/* 5. Two-User Experience Section */}
       <motion.section
         id="roles"
+        aria-labelledby="roles-heading"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
@@ -1031,6 +1176,7 @@ export default function HomePage() {
             Dual Workspaces
           </span>
           <h2
+            id="roles-heading"
             style={{
               fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(24px, 3.5vw, 36px)',
@@ -1296,6 +1442,8 @@ export default function HomePage() {
 
       {/* 6. Refined Prototype Callout Card */}
       <motion.section
+        id="demo-callout"
+        aria-labelledby="callout-heading"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
@@ -1349,6 +1497,7 @@ export default function HomePage() {
               </span>
 
               <h2
+                id="callout-heading"
                 style={{
                   fontFamily: 'var(--font-heading)',
                   fontSize: 'clamp(24px, 3.2vw, 34px)',
@@ -1410,6 +1559,7 @@ export default function HomePage() {
           )}
         </TiltCard>
       </motion.section>
+      </main>
 
       {/* 7. Dedicated Professional Product Footer */}
       <footer
@@ -1492,9 +1642,9 @@ export default function HomePage() {
 
             {/* Column 2: Product Architecture */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <h4 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-charcoal)' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-charcoal)' }}>
                 Product
-              </h4>
+              </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '13px' }}>
                 <a href="#product" className="footer-link">Autonomous Triage</a>
                 <a href="#how-it-works" onClick={scrollToHowItWorks} className="footer-link">Workflow Engine</a>
@@ -1507,9 +1657,9 @@ export default function HomePage() {
 
             {/* Column 3: Workspaces */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <h4 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-charcoal)' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-charcoal)' }}>
                 Workspaces
-              </h4>
+              </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '13px' }}>
                 <Link to="/app/overview" className="footer-link">Assistant Overview</Link>
                 <Link to="/app/inbox" className="footer-link">Unified Inbox</Link>
@@ -1521,9 +1671,9 @@ export default function HomePage() {
 
             {/* Column 4: Access & Protocol */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <h4 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-charcoal)' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-charcoal)' }}>
                 Protocol & Access
-              </h4>
+              </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '13px' }}>
                 <button
                   type="button"
