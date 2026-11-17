@@ -751,17 +751,107 @@ export const api = {
     } catch (e) {
       console.warn('[Relay API] Using local fallback for Copilot');
       const all = getLocalConversations();
-      const matches = all.filter((c) => !c.isArchived && c.actionStatus === 'action_required');
+      const q = (query || '').toLowerCase();
+      const unarchived = all.filter((c) => !c.isArchived);
+
+      const pendingClient = unarchived.filter(
+        (c) => c.responsibility === 'client' && c.actionStatus !== 'completed' && c.actionStatus !== 'resolved'
+      );
+      const handled = unarchived.filter((c) => c.actionStatus === 'completed' || c.handledBy);
+      const pendingAssistant = unarchived.filter(
+        (c) => c.responsibility === 'assistant' && c.actionStatus === 'action_required'
+      );
+      const waiting = unarchived.filter((c) => c.actionStatus === 'waiting');
+
+      // Specific conversation match
+      const matched = unarchived.find((c) => {
+        const sub = (c.subject || '').toLowerCase();
+        return sub && q.includes(sub.slice(0, 15));
+      });
+
+      if (matched && (q.includes('is ') || q.includes('status') || q.includes('awaiting') || q.includes('handled') || q.includes('still'))) {
+        const isDone = matched.actionStatus === 'completed' || matched.handledBy;
+        return {
+          answer: `**"${matched.subject}"** has already been **handled and completed**${matched.handledBy === 'client' ? ' by Arjun Mehta' : ''}. It is no longer pending or awaiting action.`,
+          referencedConversations: [{
+            id: matched.id,
+            subject: matched.subject,
+            sender: matched.sender?.name,
+            time: matched.lastMessageAt,
+            responsibility: matched.responsibility,
+            actionStatus: matched.actionStatus,
+            handledBy: matched.handledBy || null
+          }],
+          queryType: 'status_check',
+          aiSource: 'deterministic-fallback'
+        };
+      }
+
+      if (q.includes('handled') || q.includes('completed')) {
+        return {
+          answer: `Identified ${handled.length} completed conversation${handled.length === 1 ? '' : 's'}. Handled items are safely archived as completed.`,
+          referencedConversations: handled.slice(0, 5).map((c) => ({
+            id: c.id,
+            subject: c.subject,
+            sender: c.sender?.name,
+            time: c.lastMessageAt,
+            responsibility: c.responsibility,
+            actionStatus: c.actionStatus,
+            handledBy: c.handledBy || null
+          })),
+          queryType: 'list',
+          segment: 'handled',
+          aiSource: 'deterministic-fallback'
+        };
+      }
+
+      if (q.includes('client') || q.includes('arjun') || q.includes('decisions')) {
+        return {
+          answer: `There are currently **${pendingClient.length}** conversations requiring Arjun Mehta's personal decision or review. Completed items are excluded.`,
+          referencedConversations: pendingClient.map((c) => ({
+            id: c.id,
+            subject: c.subject,
+            sender: c.sender?.name,
+            time: c.lastMessageAt,
+            responsibility: c.responsibility,
+            actionStatus: c.actionStatus,
+            handledBy: c.handledBy || null
+          })),
+          queryType: 'list',
+          segment: 'client-reply',
+          aiSource: 'deterministic-fallback'
+        };
+      }
+
+      if (q.includes('waiting')) {
+        return {
+          answer: `You are currently waiting for a counterparty response on ${waiting.length} conversation${waiting.length === 1 ? '' : 's'}.`,
+          referencedConversations: waiting.map((c) => ({
+            id: c.id,
+            subject: c.subject,
+            sender: c.sender?.name,
+            time: c.lastMessageAt,
+            responsibility: c.responsibility,
+            actionStatus: c.actionStatus
+          })),
+          queryType: 'list',
+          segment: 'waiting',
+          aiSource: 'deterministic-fallback'
+        };
+      }
+
       return {
-        answer: `You currently have ${matches.length} conversations requiring attention across Arjun Mehta's accounts.`,
-        referencedConversations: matches.slice(0, 4).map((c) => ({
+        answer: `You currently have ${pendingAssistant.length} conversations requiring assistant attention across Arjun Mehta's accounts.`,
+        referencedConversations: pendingAssistant.slice(0, 4).map((c) => ({
           id: c.id,
           subject: c.subject,
           sender: c.sender?.name,
           time: c.lastMessageAt,
-          responsibility: c.responsibility
+          responsibility: c.responsibility,
+          actionStatus: c.actionStatus
         })),
         queryType: 'list',
+        segment: 'assistant-reply',
         aiSource: 'deterministic-fallback'
       };
     }

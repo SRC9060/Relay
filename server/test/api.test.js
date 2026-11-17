@@ -50,10 +50,12 @@ test('GET /api/health reports database status without exposing credentials', asy
   assert.ok(data.database);
   assert.ok(['connected', 'disconnected', 'connecting'].includes(data.database.status));
 
-  // Verify zero credentials or URIs leaked
+  // Verify zero credentials, hosts or database names leaked
   const str = JSON.stringify(data);
   assert.ok(!str.includes('password'));
   assert.ok(!str.includes('mongodb+srv://'));
+  assert.equal(data.database.host, undefined, 'Health endpoint does not expose database host');
+  assert.equal(data.database.name, undefined, 'Health endpoint does not expose database name');
 });
 
 test('GET /api/auth/demo-users returns seeded assistant and client', async () => {
@@ -544,3 +546,69 @@ test('Idempotent Seeding: Running seeder multiple times never duplicates convers
   const afterJson = await afterRes.json();
   assert.equal(afterJson.data.length, initialCount);
 });
+
+// ==========================================
+// REGRESSION TESTS: AI COPILOT STATUS SYNC
+// ==========================================
+
+test('Regression: Client handled email is excluded from Copilot pending client decision queries', async () => {
+  // Ensure conv_01 is marked as handled by client
+  const handleRes = await fetch(`${baseUrl}/api/conversations/conv_01/handled`, { method: 'POST' });
+  assert.equal(handleRes.status, 200);
+
+  // Ask Copilot about pending decisions
+  const copilotRes = await fetch(`${baseUrl}/api/conversations/copilot`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: 'Which client decisions are still pending?' })
+  });
+  assert.equal(copilotRes.status, 200);
+  const copilotJson = await copilotRes.json();
+  assert.equal(copilotJson.success, true);
+
+  // conv_01 MUST NOT be present in referenced pending conversations
+  assert.ok(
+    !copilotJson.data.referencedConversations.some((c) => c.id === 'conv_01'),
+    'Handled conversation conv_01 must be excluded from pending client decisions'
+  );
+  assert.ok(
+    !copilotJson.data.answer.includes('Board Resolution: Series B Shareholder Written Consent'),
+    'Answer text must not present conv_01 as pending'
+  );
+});
+
+test('Regression: Specific inquiry on handled email confirms completed status and rules out pending action', async () => {
+  const res = await fetch(`${baseUrl}/api/conversations/copilot`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      query: 'Is the Board Resolution: Series B Shareholder Written Consent still awaiting a client decision?'
+    })
+  });
+  assert.equal(res.status, 200);
+  const json = await res.json();
+  assert.equal(json.success, true);
+  assert.ok(json.data.isHandled, 'Response recognizes conversation is handled');
+  assert.ok(json.data.answer.includes('handled and completed'), 'Answer states conversation is handled and completed');
+  assert.ok(json.data.answer.includes('no longer awaiting action'), 'Answer confirms no longer awaiting action');
+});
+
+test('Regression: Historical lookup retrieves handled conversations when explicitly requested', async () => {
+  const res = await fetch(`${baseUrl}/api/conversations/copilot`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: 'Which emails have already been handled?' })
+  });
+  assert.equal(res.status, 200);
+  const json = await res.json();
+  assert.equal(json.success, true);
+  assert.ok(json.data.referencedConversations.length > 0, 'Retrieves handled conversations');
+  assert.ok(
+    json.data.referencedConversations.some((c) => c.id === 'conv_01'),
+    'Includes conv_01 in historical handled list'
+  );
+  const conv01Ref = json.data.referencedConversations.find((c) => c.id === 'conv_01');
+  assert.equal(conv01Ref.handledBy, 'client');
+  assert.equal(conv01Ref.actionStatus, 'completed');
+});
+

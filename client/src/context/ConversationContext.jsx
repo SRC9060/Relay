@@ -5,9 +5,22 @@ import { useAccounts } from './AccountContext';
 
 const ConversationContext = createContext(null);
 
+// Cross-tab broadcast channel for instantaneous workspace synchronization
+const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('relay_workspace_sync') : null;
+
 // Notify both workspaces when a persisted conversation changes.
 const notifyConversationChange = () => {
-  if (typeof window !== 'undefined') window.dispatchEvent(new Event('relay:conversations-changed'));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('relay:conversations-changed'));
+    try {
+      localStorage.setItem('relay_last_sync_ping', Date.now().toString());
+    } catch {}
+    if (syncChannel) {
+      try {
+        syncChannel.postMessage({ type: 'sync', timestamp: Date.now() });
+      } catch {}
+    }
+  }
 };
 
 export function ConversationProvider({ children }) {
@@ -142,8 +155,31 @@ export function ConversationProvider({ children }) {
         }
       }).catch((error) => console.error('[Relay] Failed to refresh counts:', error));
     };
+
     window.addEventListener('relay:conversations-changed', handleConversationChange);
-    return () => window.removeEventListener('relay:conversations-changed', handleConversationChange);
+
+    // Cross-tab broadcast channel sync
+    if (syncChannel) {
+      syncChannel.onmessage = () => {
+        handleConversationChange();
+      };
+    }
+
+    // Storage event sync for multi-tab environments
+    const handleStorage = (e) => {
+      if (e.key === 'relay_last_sync_ping') {
+        handleConversationChange();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener('relay:conversations-changed', handleConversationChange);
+      window.removeEventListener('storage', handleStorage);
+      if (syncChannel) {
+        syncChannel.onmessage = null;
+      }
+    };
   }, [fetchConversations, selectedAccountId]);
 
   // Also fetch counts on mount

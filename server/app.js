@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API health check with database status (safe, credential-free)
+// API health check with database status (safe, credential-free, zero infrastructure exposure)
 app.get('/api/health', (req, res) => {
   const dbState = getDbStatus();
   res.json({
@@ -20,9 +20,7 @@ app.get('/api/health', (req, res) => {
     milestone: 3,
     database: {
       status: dbState.status,
-      readyState: dbState.readyState,
-      host: dbState.host,
-      name: dbState.name
+      readyState: dbState.readyState
     },
     timestamp: new Date().toISOString()
   });

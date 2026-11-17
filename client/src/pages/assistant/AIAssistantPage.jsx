@@ -40,9 +40,10 @@ export default function AIAssistantPage() {
   const starterPrompts = [
     'Show me emails that need my attention',
     'What am I waiting for a response on?',
-    "Which emails require the client's attention?",
-    'Show scheduled meetings and calendar dates',
-    'Why is Board Resolution assigned to client?'
+    "Which client decisions are still pending?",
+    'Which emails have already been handled?',
+    'What should I work on next?',
+    'Show scheduled meetings and calendar dates'
   ];
 
   const handleSend = async (userQuery) => {
@@ -62,7 +63,7 @@ export default function AIAssistantPage() {
     try {
       const res = await api.askCopilot({
         query: q,
-        conversationId: selectedConversation?.id || conversations[0]?.id
+        conversationId: selectedConversation?.id || null
       });
 
       const copilotMsg = {
@@ -264,6 +265,21 @@ export default function AIAssistantPage() {
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                          {ref.actionStatus === 'completed' && (
+                            <span
+                              style={{
+                                fontSize: '10.5px',
+                                fontWeight: 600,
+                                padding: '2px 7px',
+                                borderRadius: 'var(--radius-xs)',
+                                backgroundColor: 'var(--color-success-bg)',
+                                color: 'var(--color-success)',
+                                border: '1px solid var(--color-success)'
+                              }}
+                            >
+                              {ref.handledBy === 'client' ? 'Handled by Client' : 'Completed'}
+                            </span>
+                          )}
                           <Badge type={ref.responsibility} size="sm" dot />
                           <ArrowRight size={13} color="var(--color-charcoal-muted)" />
                         </div>

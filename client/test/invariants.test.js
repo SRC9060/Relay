@@ -476,3 +476,29 @@ test('Interactive cards accessibility and semantic confidence labels are verifie
   // Strict descending heading hierarchy: No <h4> tags present anywhere on HomePage
   assert.ok(!homePageCode.includes('<h4'), 'HomePage strictly uses H1, H2, and H3 with zero H4 skipping');
 });
+
+test('Copilot regression: Local fallback accurately distinguishes handled from pending conversations', async () => {
+  const { api } = await import('../src/services/api.js');
+
+  // Mark conv_01 as handled
+  await api.markHandled('conv_01');
+
+  // Query pending client decisions
+  const pendingRes = await api.askCopilot({ query: 'Which client decisions are still pending?' });
+  assert.ok(!pendingRes.referencedConversations.some(c => c.id === 'conv_01'), 'Handled conv_01 is excluded from pending decisions');
+
+  // Query handled emails
+  const handledRes = await api.askCopilot({ query: 'Which emails have already been handled?' });
+  assert.ok(handledRes.referencedConversations.some(c => c.id === 'conv_01'), 'Handled conv_01 is returned in historical handled lookup');
+
+  // Specific conversation status
+  const statusRes = await api.askCopilot({ query: 'Is Board Resolution still awaiting action?' });
+  assert.ok(statusRes.answer.includes('handled and completed'), 'Specific status confirms handled and completed');
+});
+
+test('Cross-workspace synchronization: BroadcastChannel and storage ping are integrated', () => {
+  const contextCode = fs.readFileSync(path.resolve('./src/context/ConversationContext.jsx'), 'utf-8');
+  assert.ok(contextCode.includes('BroadcastChannel'), 'ConversationContext initializes BroadcastChannel');
+  assert.ok(contextCode.includes('relay_workspace_sync'), 'BroadcastChannel listens on relay_workspace_sync');
+  assert.ok(contextCode.includes('relay_last_sync_ping'), 'Storage event ping triggers cross-tab synchronization');
+});

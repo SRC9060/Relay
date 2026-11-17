@@ -347,7 +347,7 @@ class StorageService {
   }
 
   async updateConversation(id, updates = {}) {
-    const allowed = ['isRead', 'isUnread', 'isImportant', 'isArchived', 'actionStatus', 'category', 'needsReview', 'aiSummary', 'summaryDetails'];
+    const allowed = ['isRead', 'isUnread', 'isImportant', 'isArchived', 'actionStatus', 'category', 'needsReview', 'aiSummary', 'summaryDetails', 'handledBy', 'handledAt'];
     const updateFields = {};
 
     for (const key of allowed) {
