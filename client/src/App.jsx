@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AccountProvider } from './context/AccountContext';
 import { ConversationProvider } from './context/ConversationContext';
@@ -93,6 +94,7 @@ export default function App() {
               {/* Default Catch-all */}
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
+            <Analytics />
           </ConversationProvider>
         </AccountProvider>
       </AuthProvider>
